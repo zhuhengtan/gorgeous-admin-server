@@ -1,0 +1,15 @@
+{
+  "name": "koa-typeorm-demo",
+  "version": "1.0.0",
+  "description": "A demo of koa and typeorm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "koa",
+    "typeorm"
+  ],
+  "author": "Alfred <zxsprout@foxmail.com>",
+  "license": "ISC"
+}

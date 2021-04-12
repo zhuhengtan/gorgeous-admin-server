@@ -1,18 +1,21 @@
-import Koa from 'koa';
-import cors from '@koa/cors';
-import bodyParser from 'koa-bodyparser';
+import Koa from 'koa'
+import cors from '@koa/cors'
+import bodyParser from 'koa-bodyparser'
 
-// 初始化 Koa 应用实例
-const app = new Koa();
+import router from './routes'
+import { logger } from './logger'
 
-// 注册中间件
-app.use(cors());
-app.use(bodyParser());
+// init koa app instance
+const app = new Koa()
 
-// 响应用户请求
-app.use((ctx) => {
-  ctx.body = 'Hello Koa';
-});
+// register middleware
+app.use(logger())
+app.use(cors())
+app.use(bodyParser())
 
-// 运行服务器
-app.listen(3003);
+// response to client request
+app.use(router.routes())
+  .use(router.allowedMethods())
+
+// run server
+app.listen(3003)

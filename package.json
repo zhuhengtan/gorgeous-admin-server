@@ -13,6 +13,7 @@
   "author": "Alfred <zxsprout@foxmail.com>",
   "license": "ISC",
   "devDependencies": {
+    "@types/jsonwebtoken": "^8.5.1",
     "@types/koa": "^2.13.1",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa__cors": "^3.0.2",
@@ -26,8 +27,10 @@
     "@koa/cors": "^3.1.0",
     "@koa/router": "^10.0.0",
     "argon2": "^0.27.2",
+    "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
+    "koa-jwt": "^4.0.1",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.32"

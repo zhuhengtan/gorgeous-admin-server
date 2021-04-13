@@ -1,4 +1,5 @@
 import { Context } from 'koa'
+import { hash } from 'argon2'
 import { getManager } from 'typeorm'
 
 import { User } from '../entity/user'
@@ -25,9 +26,15 @@ export default class UserController {
   }
 
   public static async updateUser(ctx: Context) {
+    const { password, id, ...params } = ctx.request.body
+    if (password) {
+      const newPassword = await hash(password)
+      Object.assign(params, { password: newPassword })
+    }
+
     const userRepository = getManager().getRepository(User)
-    await userRepository.update(+ctx.params.id, ctx.request.body)
-    const updatedUser = await userRepository.findOne(+ctx.params.id)
+    await userRepository.update(+id, params)
+    const updatedUser = await userRepository.findOne(+id)
 
     if (updatedUser) {
       ctx.status = 200
@@ -38,8 +45,10 @@ export default class UserController {
   }
 
   public static async deleteUser(ctx: Context) {
+    const id = +ctx.request.body.id
+
     const userRepository = getManager().getRepository(User)
-    await userRepository.delete(+ctx.params.id)
+    await userRepository.delete(id)
     ctx.status = 204
   }
 }

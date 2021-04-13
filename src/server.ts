@@ -2,10 +2,12 @@ import Koa from 'koa'
 import cors from '@koa/cors'
 import bodyParser from 'koa-bodyparser'
 import { createConnection } from 'typeorm'
+import jwt from 'koa-jwt'
 import 'reflect-metadata'
 
-import router from './routes'
+import { unProtectedRouter, protectedRouter } from './routes'
 import { logger } from './logger'
+import { JWT_SECRET } from './utils/contants'
 
 createConnection().then(() => {
   // init koa app instance
@@ -17,8 +19,15 @@ createConnection().then(() => {
   app.use(bodyParser())
 
   // response to client request
-  app.use(router.routes())
-    .use(router.allowedMethods())
+  // routes without jwt validation
+  app.use(unProtectedRouter.routes())
+    .use(unProtectedRouter.allowedMethods())
+
+  app.use(jwt({ secret: JWT_SECRET }))
+
+  // routes with jwt validate
+  app.use(protectedRouter.routes())
+    .use(protectedRouter.allowedMethods())
 
   // run server
   app.listen(3003)

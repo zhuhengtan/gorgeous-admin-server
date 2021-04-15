@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 
 import { User } from '../entity/user'
 import { JWT_SECRET } from '../utils/contants'
+import { UnauthorizedException } from '../exceptions'
 
 export default class AuthController {
   static async login(ctx: Context) {
@@ -18,14 +19,12 @@ export default class AuthController {
       .getOne()
 
       if (!user) {
-        ctx.status = 401
-        ctx.body = { message: '用户名不存在' }
+        throw new UnauthorizedException('The user does not exist')
       } else if (await verify(user.password, password )) {
         ctx.status = 200
         ctx.body = { token: jwt.sign({id: user.id }, JWT_SECRET) }
       } else {
-        ctx.status = 401
-        ctx.body = { message: '密码错误' }
+        throw new UnauthorizedException('Wrong password')
       }
   }
 

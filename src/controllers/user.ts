@@ -3,6 +3,7 @@ import { hash } from 'argon2'
 import { getManager } from 'typeorm'
 
 import { User } from '../entity/user'
+import { NotFoundException } from '../exceptions'
 
 export default class UserController {
   public static async listUsers(ctx: Context) {
@@ -21,7 +22,7 @@ export default class UserController {
       ctx.status = 200
       ctx.body = user
     } else {
-      ctx.status = 404
+      throw new NotFoundException()
     }
   }
 
@@ -40,7 +41,7 @@ export default class UserController {
       ctx.status = 200
       ctx.body = updatedUser
     } else {
-      ctx.status = 404
+      throw new NotFoundException()
     }
   }
 

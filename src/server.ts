@@ -18,6 +18,16 @@ createConnection().then(() => {
   app.use(cors())
   app.use(bodyParser())
 
+  // error handling
+  app.use(async (ctx, next) => {
+    try {
+      await next()
+    } catch (error) {
+      ctx.status = error.status || 500
+      ctx.body = { message: error.message }
+    }
+  })
+
   // response to client request
   // routes without jwt validation
   app.use(unProtectedRouter.routes())

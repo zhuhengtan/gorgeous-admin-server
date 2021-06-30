@@ -7,7 +7,7 @@ import 'reflect-metadata'
 
 import { unProtectedRouter, protectedRouter } from './routes'
 import { logger } from './logger'
-import { JWT_SECRET } from './utils/contants'
+import { JWT_SECRET } from './utils/constants'
 
 createConnection().then(() => {
   // init koa app instance

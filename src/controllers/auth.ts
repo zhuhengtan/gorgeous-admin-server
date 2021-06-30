@@ -4,7 +4,7 @@ import { getManager } from 'typeorm'
 import jwt from 'jsonwebtoken'
 
 import { User } from '../entity/user'
-import { JWT_SECRET } from '../utils/contants'
+import { JWT_SECRET } from '../utils/constants'
 import { UnauthorizedException } from '../exceptions'
 
 export default class AuthController {

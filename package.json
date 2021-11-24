@@ -1,24 +1,31 @@
 {
-  "name": "koa-typeorm-demo",
+  "name": "koa-server",
   "version": "1.0.0",
-  "description": "A demo of koa and typeorm",
+  "description": "backend for coop",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --watch src -e ts,tsx --exec ts-node src/server.ts"
+    "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json",
+    "compile": "tsc",
+    "prd": "npm run compile && pm2 start ./bin/www --name koa-server",
+    "restart": "npm run compile && pm2 restart koa-server",
+    "stop": "pm2 stop koa-server"
   },
   "keywords": [
     "koa",
     "typeorm"
   ],
-  "author": "Alfred <zxsprout@foxmail.com>",
+  "author": "hunterzhu",
   "license": "ISC",
   "devDependencies": {
+    "@types/config": "^0.0.40",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/koa": "^2.13.1",
-    "@types/koa-bodyparser": "^4.3.0",
     "@types/koa__cors": "^3.0.2",
     "@types/koa__router": "^8.0.4",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/md5": "^2.3.1",
     "@types/node": "^14.14.37",
+    "cross-env": "^7.0.3",
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
@@ -31,6 +38,8 @@
     "koa": "^2.13.1",
     "koa-bodyparser": "^4.3.0",
     "koa-jwt": "^4.0.1",
+    "md5": "^2.3.0",
+    "moment": "^2.29.1",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.32"

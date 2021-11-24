@@ -1,0 +1,15 @@
+// www
+const env = process.env.NODE_ENV;
+
+let envConfig = null;
+let App = null;
+if (env === 'development') {
+  App = require('../src/app').App;
+  envConfig = require('../env/index').default
+} else {
+  App = require('../dist/src/app').App;
+  envConfig = require('../dist/env/index').default
+}
+
+new App(envConfig.port);
+// app.start(envConfig.port);

@@ -1,14 +1,14 @@
 {
-  "name": "local-life-be",
+  "name": "gorgeous-admin-server",
   "version": "1.0.0",
   "description": "backend for coop",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json",
     "compile": "tsc",
-    "prd": "npm run compile && pm2 start ./bin/www --name local-life-be",
-    "restart": "npm run compile && pm2 restart local-life-be",
-    "stop": "pm2 stop local-life-be"
+    "prd": "npm run compile && pm2 start ./bin/www --name gorgeous-admin-server",
+    "restart": "npm run compile && pm2 restart gorgeous-admin-server",
+    "stop": "pm2 stop gorgeous-admin-server"
   },
   "keywords": [
     "koa",

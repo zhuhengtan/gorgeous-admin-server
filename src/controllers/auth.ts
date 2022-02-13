@@ -10,11 +10,11 @@ import { UnauthorizedException } from '../exceptions'
 export default class AuthController {
   static async login(ctx: Context) {
     const userRepository = getManager().getRepository(User)
-    const { request: { body: { name, password } }} = ctx
+    const { email, password } = ctx.request.body  as any
 
     const user = await userRepository
       .createQueryBuilder()
-      .where({ name })
+      .where({ email })
       .addSelect('User.password')
       .getOne()
 

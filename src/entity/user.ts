@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm'
+ import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm'
 import { Role } from './role'
 import moment from 'moment'
 
@@ -20,6 +20,9 @@ export class User {
     name: 'user_type'
   })
   userType: number
+
+  @Column()
+  avatar: string
 
   @ManyToMany(() => Role)
   @JoinTable()

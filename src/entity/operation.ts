@@ -20,8 +20,8 @@ export class Operation {
   @Column({
     name: 'related_apis'
   })
-  relatedApis: string[]
-
+  relatedApis: string
+  
   @OneToOne(() => User)
   @JoinColumn({
     name: 'creator_uid'

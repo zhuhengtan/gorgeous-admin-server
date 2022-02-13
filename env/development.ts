@@ -20,5 +20,6 @@ export const config = {
       entitiesDir: "src/entity"
     },
     timezone: "+8"
-  }
+  },
+  adminEmail: 'zhuhengtan@126.com', // 系统管理员邮箱
 };

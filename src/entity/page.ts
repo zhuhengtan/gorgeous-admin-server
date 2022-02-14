@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, CreateDateColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, CreateDateColumn, OneToMany } from 'typeorm'
 import moment from 'moment'
+import { Operation } from './operation'
 
-@Entity()
+@Entity('pages')
 export class Page {
   @PrimaryGeneratedColumn()
   id: number
@@ -14,11 +15,15 @@ export class Page {
   })
   path: string
 
+  @OneToMany(()=>Operation, operation=>operation.page)
+  @JoinColumn()
+  operations: Operation[]
+
   @CreateDateColumn({
     name: 'created_at',
     transformer: {
-      from: (e: any) => moment(e).utcOffset(+480).format('YYYY-MM-DD HH:mm:ss'),
-      to: (e: any) => moment(e).utcOffset(+480).format('YYYY-MM-DD HH:mm:ss')
+      from: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss'),
+      to: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss')
     } as any,
   })
   createdAt: Date

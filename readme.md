@@ -20,6 +20,10 @@ git clone git@github.com:zhuhengtan/gorgeous-admin-server.git
 // 安装
 npm i
 
+// 配置 /env/development !!!!!
+// 配置 /env/development !!!!!
+// 配置 /env/development !!!!!
+
 // 运行
 npm run dev
 

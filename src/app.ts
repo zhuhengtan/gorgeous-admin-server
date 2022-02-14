@@ -50,10 +50,12 @@ export class App {
         this.app.use(auth())
       }
       // response to client request
-      this.app.use(jwt({ secret: JWT_SECRET }).unless({
-        // 登录接口不需要验证
-        path: ['/api/auth/login']
-      }))
+      if(envConfig.env === 'production') {
+        this.app.use(jwt({ secret: JWT_SECRET }).unless({
+          // 登录接口不需要验证
+          path: ['/api/auth/login']
+        }))
+      }
       this.app.use(async (ctx: Context, next: Next) => {
         if (ctx.state.user) {
           const re = getManager().getRepository(User)

@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, JoinColumn, ManyToMany } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm'
 import moment from 'moment'
 import { User } from './user'
 import { Operation } from './operation'
 
-@Entity()
+@Entity('roles')
 export class Role {
   @PrimaryGeneratedColumn()
   id: number
@@ -18,14 +18,14 @@ export class Role {
   creator: User
 
   @ManyToMany(()=>Operation)
-  @JoinColumn()
+  @JoinTable()
   operations: Operation[]
 
   @CreateDateColumn({
     name: 'created_at',
     transformer: {
-      from: (e: any) => moment(e).utcOffset(+480).format('YYYY-MM-DD HH:mm:ss'),
-      to: (e: any) => moment(e).utcOffset(+480).format('YYYY-MM-DD HH:mm:ss')
+      from: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss'),
+      to: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss')
     } as any,
   })
   createdAt: Date

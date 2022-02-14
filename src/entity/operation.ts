@@ -3,7 +3,7 @@ import { User } from './user'
 import moment from 'moment'
 import { Page } from './page'
 
-@Entity()
+@Entity('operations')
 export class Operation {
   @PrimaryGeneratedColumn()
   id: number
@@ -11,7 +11,10 @@ export class Operation {
   @Column()
   name: string
 
-  @ManyToOne(()=>Page)
+  @Column()
+  key: string
+
+  @ManyToOne(()=>Page, page=>page.operations)
   @JoinColumn({
     name: 'page_id'
   })
@@ -31,8 +34,8 @@ export class Operation {
   @CreateDateColumn({
     name: 'created_at',
     transformer: {
-      from: (e: any) => moment(e).utcOffset(+480).format('YYYY-MM-DD HH:mm:ss'),
-      to: (e: any) => moment(e).utcOffset(+480).format('YYYY-MM-DD HH:mm:ss')
+      from: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss'),
+      to: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss')
     } as any,
   })
   createdAt: Date

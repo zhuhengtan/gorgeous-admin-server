@@ -2,7 +2,7 @@
 import { Role } from './role'
 import moment from 'moment'
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number
@@ -21,7 +21,9 @@ export class User {
   })
   userType: number
 
-  @Column()
+  @Column({
+    default: ''
+  })
   avatar: string
 
   @ManyToMany(() => Role)
@@ -37,8 +39,8 @@ export class User {
   @CreateDateColumn({
     name: 'created_at',
     transformer: {
-      from: (e: any) => moment(e).utcOffset(+480).format('YYYY-MM-DD HH:mm:ss'),
-      to: (e: any) => moment(e).utcOffset(+480).format('YYYY-MM-DD HH:mm:ss')
+      from: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss'),
+      to: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss')
     } as any,
   })
   createdAt: Date

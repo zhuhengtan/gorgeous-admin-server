@@ -21,9 +21,9 @@ export class Operation {
   page: Page
 
   @Column({
-    name: 'related_apis'
+    name: 'related_api'
   })
-  relatedApis: string
+  relatedApi: string
   
   @OneToOne(() => User)
   @JoinColumn({

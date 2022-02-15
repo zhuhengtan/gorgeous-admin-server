@@ -1,29 +1,21 @@
-const KEY = 'd5f81d3d7a694e59ba65eece08f0b252'
-import md5 from 'md5'
+import { getManager } from 'typeorm'
+import { User } from '../entity/user'
+const unless = require('koa-unless')
 
 export default function () {
-  return async function (ctx: any, next:any) {
-    // 取出参数
-    let params: any;
-    if (ctx.method === 'GET') {
-      params = ctx.query
-    } else {
-      params = ctx.request.body
+  const authMid = async function (ctx: any, next: any) {
+    const api = `${ctx.request.method} ${ctx.request.url.split('?')[0]}`
+    const userRepository = getManager().getRepository(User)
+    const res = await userRepository.query(`select * from (select * from (SELECT * from role_operation where role_id in (select role_id from user_role where user_id = ${ctx.requester.id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id) as tmp2 WHERE related_api = '${api}'`)
+    if (res && res.length > 0) {
+      return await next()
+    }else{
+      ctx.fail('没有权限！')
+      return
     }
+  };
 
-    // 判断签名
-    if (!params.sign || !params.timestamp) {
-      ctx.fail('access deny', 401)
-    } else {
-      const { timestamp, sign } = params;
-      const keysArray = Object.keys(params).sort();
-      const checkSign = md5(`${keysArray.filter((key) => (key !== 'timestamp' && key !== 'sign')).map((key) => params[key]).join('')}${timestamp}${KEY}`).toUpperCase()
-      if(checkSign === sign) {
-        await next()
-      }else {
-        ctx.fail('access deny', 401)
-        await next()
-      }
-    }
-  }
-}
+  authMid.unless = unless
+
+  return authMid;
+};

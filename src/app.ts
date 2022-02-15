@@ -5,6 +5,7 @@ import { createConnection } from 'typeorm'
 import jwt from 'koa-jwt'
 import 'reflect-metadata'
 import formatResponse from './middlewares/formatResponse'
+import sign from './middlewares/sign'
 import auth from './middlewares/auth'
 
 import { router } from './routes'
@@ -29,7 +30,7 @@ export class App {
 
   // 装配各种中间件
   private async init() {
-    // register middleware
+    // 开启数据库链接
     createConnection(envConfig.database as any).then(() => {
       this.app.use(logger())
       this.app.use(cors())
@@ -47,15 +48,27 @@ export class App {
       })
 
       if(envConfig.env === 'production') {
-        this.app.use(auth())
+        this.app.use(sign())
       }
-      // response to client request
-      if(envConfig.env === 'production') {
-        this.app.use(jwt({ secret: JWT_SECRET }).unless({
-          // 登录接口不需要验证
-          path: ['/api/auth/login']
-        }))
-      }
+      
+      // 自定义jwt验证失败返回信息
+      this.app.use(function(ctx, next){
+        return next().catch((err) => {
+          if (401 == err.status) {
+            err.status = 200
+            ctx.fail('登录失效或未登录！', 401)
+          } else {
+            throw err;
+          }
+        });
+      })
+      // jwt中间件
+      this.app.use(jwt({ secret: JWT_SECRET }).unless({
+        // 登录接口不需要验证
+        path: ['/api/auth/login']
+      }))
+
+      // 将请求者用户信息放在ctx上下文中
       this.app.use(async (ctx: Context, next: Next) => {
         if (ctx.state.user) {
           const re = getManager().getRepository(User)
@@ -63,11 +76,20 @@ export class App {
         }
         await next()
       })
-      // routes with jwt validate
+
+      // 鉴权
+      this.app.use(auth().unless({
+        path: [
+          '/api/auth/login',
+          '/api/auth/user-auth',
+        ]
+      }))
+
+      // 导入路由
       this.app.use(router.routes())
       this.app.use(router.allowedMethods())
     }).catch((err: string) => {
-      console.log('TypeORM connection error:', err)
+      console.log('数据库链接错误：', err)
     })
   }
 

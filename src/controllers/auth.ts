@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken'
 import { router } from '../routes'
 
 import { JWT_SECRET } from '../utils/constants'
-import { UnauthorizedException } from '../exceptions'
 import envConfig from '../../env/index'
 import { User } from '../entity/user'
 import { Page } from '../entity/page'
@@ -82,7 +81,7 @@ export default class AuthController {
       const tmp = new Operation()
       tmp.name = item.name
       tmp.key = item.key
-      tmp.relatedApis = item.relatedApis
+      tmp.relatedApi = item.relatedApi
       tmp.creator = ctx.requester
       return tmp
     })
@@ -119,7 +118,7 @@ export default class AuthController {
       const tmp = new Operation()
       tmp.name = item.name
       tmp.key = item.key
-      tmp.relatedApis = item.relatedApis
+      tmp.relatedApi = item.relatedApi
       tmp.creator = ctx.requester
       return tmp
     })

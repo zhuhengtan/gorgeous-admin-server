@@ -465,9 +465,33 @@ export default class AuthController {
     }
     const userRepository = getManager().getRepository(User)
     const user = await userRepository.findOne(id as string, {
-      relations: ['roles', 'roles.operations', 'roles.operations.page']
+      relations: ['roles']
     })
-    ctx.success('获取成功！', user)
+    if(!user){
+      ctx.fail('未找到该用户！')
+      return await next()
+    }
+
+    const auth = await userRepository.query(`select o.name as operationName, o.key as operationKey, p.path as pagePath from (SELECT * from role_operation where role_id in (select role_id from user_role where user_id = ${id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id LEFT JOIN pages as p on p.id = o.page_id ORDER BY pagePath`)
+    let res: {[key: string]: Array<{operationKey: string, operationName: string}>} = {}
+    auth.forEach((item: {operationKey: string, operationName: string, pagePath: string})=>{
+      if(!res[item.pagePath]) {
+        res[item.pagePath] = [{
+          operationKey: item.operationKey,
+          operationName: item.operationName,
+        }]
+      }else{
+        res[item.pagePath].push({
+          operationKey: item.operationKey,
+          operationName: item.operationName,
+        })
+      }
+    })
+
+    ctx.success('获取成功！', {
+      user,
+      auth: res
+    })
     return await next()
   }
 }

@@ -18,7 +18,15 @@ export class Role {
   creator: User
 
   @ManyToMany(()=>Operation)
-  @JoinTable()
+  @JoinTable({
+    name: 'role_operation',
+    joinColumns: [{
+      name: 'role_id'
+    }],
+    inverseJoinColumns: [{
+      name: 'operation_id'
+    }]
+  })
   operations: Operation[]
 
   @CreateDateColumn({

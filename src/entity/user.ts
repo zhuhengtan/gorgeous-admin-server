@@ -27,7 +27,15 @@ export class User {
   avatar: string
 
   @ManyToMany(() => Role)
-  @JoinTable()
+  @JoinTable({
+    name: 'user_role',
+    joinColumns: [{
+      name: 'user_id'
+    }],
+    inverseJoinColumns: [{
+      name: 'role_id'
+    }]
+  })
   roles: Role[];
 
   @OneToOne(() => User)

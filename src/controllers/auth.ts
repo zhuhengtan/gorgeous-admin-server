@@ -274,13 +274,17 @@ export default class AuthController {
       ctx.fail('邮箱格式错误！')
       return await next()
     }
+    
+    const userRepository = getManager().getRepository(User)
+    if(await userRepository.findOne({where: {email}})){
+      ctx.fail('该邮箱已经存在，请检查！')
+      return await next()
+    }
 
     const roleRepository = getManager().getRepository(Role)
     const roles = await roleRepository.findByIds(roleIds)
 
     const pwd = generateTmpPwd(8)
-
-    const userRepository = getManager().getRepository(User)
     const user = new User()
     user.name = name
     user.password = await hash(pwd)

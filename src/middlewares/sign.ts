@@ -18,7 +18,7 @@ export default function () {
     } else {
       const { timestamp, sign } = params;
       const keysArray = Object.keys(params).sort();
-      const checkSign = md5(`${keysArray.filter((key) => (key !== 'timestamp' && key !== 'sign')).map((key) => params[key]).join('')}${timestamp}${envConfig.signKey}`).toUpperCase()
+      const checkSign = md5(`${keysArray.filter((key) => (key !== 'timestamp' && key !== 'sign')).map((key) => JSON.stringify(params[key])).join('')}${timestamp}${envConfig.signKey}`).toUpperCase()
       if(checkSign === sign) {
         return await next()
       }else {

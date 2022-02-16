@@ -6,6 +6,7 @@
     name: 'gorgeous admin',
     loginUrl: 'http://localhost:3000/login',
   },
+  signKey: 'gorgeous-admin-server',
   env: 'development', //环境名称
   agreement: "http",
   port: "4000",

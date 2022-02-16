@@ -6,6 +6,7 @@ export const config = {
     name: 'gorgeous admin',
     loginUrl: '',
   },
+  signKey: 'gorgeous-admin-server',
   env: 'production', //环境名称
   agreement: "http",
   port: "3000",

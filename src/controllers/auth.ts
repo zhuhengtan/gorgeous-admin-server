@@ -33,7 +33,7 @@ export default class AuthController {
       ctx.fail(`没有该用户，请向${envConfig.adminEmail}发送邮件申请权限！`)
     } else if (await verify(user.password, password)) {
       ctx.success('登录成功！', {
-        userInfo: {
+        user: {
           id: user.id,
           name: user.name,
           email: user.email,

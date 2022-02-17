@@ -111,22 +111,18 @@ export default class AuthController {
       ctx.fail('未找到该页面！')
       return await next()
     }
-    const operationRepository = getManager().getRepository(Operation)
-    await operationRepository.remove(page.operations)
 
-    const operationEntities = operations.map((item: any) => {
-      const tmp = new Operation()
-      tmp.name = item.name
-      tmp.key = item.key
-      tmp.relatedApi = item.relatedApi
-      tmp.creator = ctx.requester
-      return tmp
-    })
-    await operationRepository.save(operationEntities)
     page.name = name
     page.path = path
-    page.operations = operationEntities
     await pageRepository.save(page)
+
+    const operationRepository = getManager().getRepository(Operation)
+    const tmp = operations.map((operation: any)=>{
+      return {...operation, page}
+    })
+    await operationRepository.save(tmp)
+    await pageRepository.save(page)
+    
     ctx.success('更新成功！')
     return await next()
   }

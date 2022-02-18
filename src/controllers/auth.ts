@@ -65,6 +65,21 @@ export default class AuthController {
     return await next()
   }
 
+  static async getPage(ctx: Context, next: Next) {
+    const { id } = ctx.query
+    if (!id) {
+      ctx.fail('参数错误！')
+      return await next()
+    }
+    const pageRepository = getManager().getRepository(Page)
+    let page = await pageRepository.findOne({
+      where: {id},
+      relations: ['operations'],
+    })
+    ctx.success('获取成功！', page)
+    return await next()
+  }
+
   static async getAllApis(ctx: Context, next: Next) {
     const list = router.stack.map((item) => `${item.methods[item.methods.length - 1]} ${item.path}`)
     ctx.success('获取成功！', list)
@@ -118,12 +133,33 @@ export default class AuthController {
 
     const operationRepository = getManager().getRepository(Operation)
     const tmp = operations.map((operation: any)=>{
-      return {...operation, page}
+      const operationEntity = new Operation()
+      if(operation.id && String(operation.id).split('_').length === 1) {
+        operationEntity.id = operation.id
+      }
+      operationEntity.name = operation.name
+      operationEntity.key = operation.key
+      operationEntity.page = page
+      operationEntity.creator = ctx.requester
+      operationEntity.relatedApi = operation.relatedApi
+      return operationEntity
     })
     await operationRepository.save(tmp)
-    await pageRepository.save(page)
     
     ctx.success('更新成功！')
+    return await next()
+  }
+
+  static async deleteOperation(ctx: Context, next: Next) {
+    const { id } = ctx.request.body as any
+    if (!id) {
+      ctx.fail('参数错误！')
+      return await next()
+    }
+    const operationRepository = getManager().getRepository(Operation)
+    await operationRepository.delete(id)
+
+    ctx.success('删除成功！')
     return await next()
   }
 
@@ -163,6 +199,21 @@ export default class AuthController {
     ctx.success('获取成功！', { list, total })
   }
 
+  static async getRole(ctx: Context, next: Next) {
+    const { id } = ctx.query
+    if (!id) {
+      ctx.fail('参数错误！')
+      return await next()
+    }
+    const roleRepository = getManager().getRepository(Role)
+    let role = await roleRepository.findOne({
+      where: {id},
+      relations: ['operations'],
+    })
+    ctx.success('获取成功！', role)
+    return await next()
+  }
+
   static async getAllOperations(ctx: Context, next: Next) {
     const pageRepository = getManager().getRepository(Page)
     const list = await pageRepository.find({
@@ -173,7 +224,7 @@ export default class AuthController {
   }
 
   static async createRole(ctx: Context, next: Next) {
-    const { name, operationIds } = ctx.request.body as any
+    const { name, description='', operationIds } = ctx.request.body as any
     if (!name || !operationIds) {
       ctx.fail('参数错误！')
       return await next()
@@ -184,6 +235,8 @@ export default class AuthController {
     const roleRepository = getManager().getRepository(Role)
     const role = new Role()
     role.name = name
+    role.description = description
+    role.roleType = 2
     role.operations = operations
     role.creator = ctx.requester
     await roleRepository.save(role)
@@ -192,7 +245,7 @@ export default class AuthController {
   }
 
   static async updateRole(ctx: Context, next: Next) {
-    const { id, name, operationIds } = ctx.request.body as any
+    const { id, name, description='', operationIds } = ctx.request.body as any
     if (!id || !name || !operationIds) {
       ctx.fail('参数错误！')
       return await next()
@@ -210,6 +263,7 @@ export default class AuthController {
     const operations = await operationRepository.findByIds(operationIds)
 
     role.name = name
+    role.description = description
     role.operations = operations
     role.creator = ctx.requester
     await roleRepository.save(role)
@@ -252,6 +306,20 @@ export default class AuthController {
     ctx.success('获取成功！', { list, total })
   }
 
+  static async getUserDetail(ctx: Context, next: Next){
+    const {id} = ctx.query
+    if(!id) {
+      ctx.fail('参数错误！')
+      return await next()
+    }
+    const userRepository = getManager().getRepository(User)
+    const user = await userRepository.findOne(id as string, {
+      relations: ['roles'],
+    })
+    ctx.success('获取成功！', user)
+    return await next()
+  }
+
   static async getAllRoles(ctx: Context, next: Next) {
     const roleRepository = getManager().getRepository(Role)
     const list = await roleRepository.find()
@@ -260,8 +328,8 @@ export default class AuthController {
   }
 
   static async createUser(ctx: Context, next: Next) {
-    const { name, email, userType, roleIds } = ctx.request.body as any
-    if (!name || !email || !userType || !roleIds) {
+    const { name, email, roleIds } = ctx.request.body as any
+    if (!name || !email || !roleIds) {
       ctx.fail('参数错误！')
       return await next()
     }
@@ -284,8 +352,8 @@ export default class AuthController {
     user.name = name
     user.password = await hash(pwd)
     user.email = email
-    user.userType = userType,
-      user.roles = roles
+    user.userType = 1
+    user.roles = roles
     user.creator = ctx.requester
     await userRepository.save(user)
     await sendMail({
@@ -298,8 +366,8 @@ export default class AuthController {
   }
 
   static async updateUser(ctx: Context, next: Next) {
-    const { id, name, userType, email, roleIds } = ctx.request.body as any
-    if (!id || !name || !email || !userType || !roleIds) {
+    const { id, name, email, status, roleIds } = ctx.request.body as any
+    if (!id || !name || !email || !roleIds) {
       ctx.fail('参数错误！')
       return await next()
     }
@@ -316,7 +384,7 @@ export default class AuthController {
     const roles = await roleRepository.findByIds(roleIds)
     user.name = name
     user.email = email
-    user.userType = userType
+    user.status = status
     user.roles = roles
     user.creator = ctx.requester
     await userRepository.save(user)
@@ -338,12 +406,12 @@ export default class AuthController {
     }
     const newPwd = generateTmpPwd(8)
     user.password = await hash(newPwd)
-    await userRepository.save(user)
     await sendMail({
       subject: '重置密码',
       email: user.email,
       text: `您好，您的${envConfig.systemInfo.name}账户，密码已重置为：${newPwd}，请尽快登录系统（${envConfig.systemInfo.loginUrl}）修改密码！`
     })
+    await userRepository.save(user)
     ctx.success('重置成功！')
     return await next()
   }

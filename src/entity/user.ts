@@ -17,9 +17,17 @@ export class User {
   email: string
 
   @Column({
-    name: 'user_type'
+    name: 'user_type',
+    comment: '0系统用户，1手动创建用户',
+    default: 1,
   })
   userType: number
+
+  @Column({
+    comment: '状态：1正常，0禁用',
+    default: 1,
+  })
+  status: number
 
   @Column({
     default: ''

@@ -11,6 +11,17 @@ export class Role {
   @Column()
   name: string
 
+  @Column({
+    name: 'role_type',
+    comment: '角色类型，1系统角色，2手动创建角色，仅手动创建角色可编辑删除',
+  })
+  roleType: number
+
+  @Column({
+    default: ''
+  })
+  description: string
+
   @OneToOne(() => User)
   @JoinColumn({
     name: 'creator_uid'

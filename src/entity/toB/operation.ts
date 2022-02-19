@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, CreateDateColumn, ManyToOne } from 'typeorm'
-import { User } from './user'
+import { Admin } from './admin'
 import moment from 'moment'
 import { Page } from './page'
 
@@ -25,11 +25,11 @@ export class Operation {
   })
   relatedApi: string
   
-  @OneToOne(() => User)
+  @OneToOne(() => Admin)
   @JoinColumn({
     name: 'creator_uid'
   })
-  creator: User
+  creator: Admin
 
   @CreateDateColumn({
     name: 'created_at',

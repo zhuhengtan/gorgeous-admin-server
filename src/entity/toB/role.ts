@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm'
 import moment from 'moment'
-import { User } from './user'
+import { Admin } from './admin'
 import { Operation } from './operation'
 
 @Entity('roles')
@@ -22,11 +22,11 @@ export class Role {
   })
   description: string
 
-  @OneToOne(() => User)
+  @OneToOne(() => Admin)
   @JoinColumn({
     name: 'creator_uid'
   })
-  creator: User
+  creator: Admin
 
   @ManyToMany(()=>Operation)
   @JoinTable({

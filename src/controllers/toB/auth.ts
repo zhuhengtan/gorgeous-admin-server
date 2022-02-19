@@ -2,46 +2,46 @@ import { Context, Next } from 'koa'
 import { verify, hash } from 'argon2'
 import { getManager } from 'typeorm'
 import jwt from 'jsonwebtoken'
-import { router } from '../routes'
+import { toBRouter } from '../../routes/toBRoutes'
 
-import { JWT_SECRET } from '../utils/constants'
-import envConfig from '../../env/index'
-import { User } from '../entity/user'
-import { Page } from '../entity/page'
-import { Operation } from '../entity/operation'
-import { Role } from '../entity/role'
-import { generateTmpPwd, getRandomCode } from '../utils'
-import { sendMail } from '../utils/sendEmail'
-import { isEmail } from '../utils/check'
-import { codeRedis } from '../utils/redis'
+import { JWT_SECRET } from '../../utils/constants'
+import envConfig from '../../../env/index'
+import { Admin } from '../../entity/toB/admin'
+import { Page } from '../../entity/toB/page'
+import { Operation } from '../../entity/toB/operation'
+import { Role } from '../../entity/toB/role'
+import { generateTmpPwd, getRandomCode } from '../../utils'
+import { sendMail } from '../../utils/sendEmail'
+import { isEmail } from '../../utils/check'
+import { codeRedis } from '../../utils/redis'
 
 export default class AuthController {
   static async login(ctx: Context, next: Next) {
-    const userRepository = getManager().getRepository(User)
+    const AdminRepository = getManager().getRepository(Admin)
     const { email, password } = ctx.request.body as any
     if (!email || !password) {
       ctx.fail('参数错误！')
       return await next()
     }
 
-    const user = await userRepository
+    const admin = await AdminRepository
       .createQueryBuilder()
       .where({ email })
-      .addSelect('User.password')
+      .addSelect('Admin.password')
       .getOne()
-    if (!user) {
+    if (!admin) {
       ctx.fail(`没有该用户，请向${envConfig.adminEmail}发送邮件申请权限！`)
-    } else if (await verify(user.password, password)) {
+    } else if (await verify(admin.password, password)) {
       ctx.success('登录成功！', {
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          userType: user.userType,
-          avatar: user.avatar,
-          createdAt: user.createdAt,
+        admin: {
+          id: admin.id,
+          name: admin.name,
+          email: admin.email,
+          adminType: admin.adminType,
+          avatar: admin.avatar,
+          createdAt: admin.createdAt,
         },
-        token: jwt.sign({ id: user.id }, JWT_SECRET)
+        token: jwt.sign({ id: admin.id }, JWT_SECRET)
       })
       return await next()
     } else {
@@ -81,7 +81,7 @@ export default class AuthController {
   }
 
   static async getAllApis(ctx: Context, next: Next) {
-    const list = router.stack.map((item) => `${item.methods[item.methods.length - 1]} ${item.path}`)
+    const list = toBRouter.stack.map((item) => `${item.methods[item.methods.length - 1]} ${item.path}`)
     ctx.success('获取成功！', list)
   }
 
@@ -97,7 +97,7 @@ export default class AuthController {
       tmp.name = item.name
       tmp.key = item.key
       tmp.relatedApi = item.relatedApi
-      tmp.creator = ctx.requester
+      tmp.creator = ctx.requestAdmin
       return tmp
     })
     await operationRepository.save(operationEntities)
@@ -140,7 +140,7 @@ export default class AuthController {
       operationEntity.name = operation.name
       operationEntity.key = operation.key
       operationEntity.page = page
-      operationEntity.creator = ctx.requester
+      operationEntity.creator = ctx.requestAdmin
       operationEntity.relatedApi = operation.relatedApi
       return operationEntity
     })
@@ -238,7 +238,7 @@ export default class AuthController {
     role.description = description
     role.roleType = 2
     role.operations = operations
-    role.creator = ctx.requester
+    role.creator = ctx.requestAdmin
     await roleRepository.save(role)
     ctx.success('创建成功！')
     return await next()
@@ -265,7 +265,7 @@ export default class AuthController {
     role.name = name
     role.description = description
     role.operations = operations
-    role.creator = ctx.requester
+    role.creator = ctx.requestAdmin
     await roleRepository.save(role)
     ctx.success('更新成功！')
     return await next()
@@ -291,10 +291,10 @@ export default class AuthController {
     return await next()
   }
 
-  static async getUserList(ctx: Context, next: Next) {
+  static async getAdminList(ctx: Context, next: Next) {
     const { page = 1, pageSize = 10 } = ctx.query
-    const userRepository = getManager().getRepository(User)
-    const list = await userRepository.find({
+    const AdminRepository = getManager().getRepository(Admin)
+    const list = await AdminRepository.find({
       relations: ['roles'],
       skip: (parseInt(page as string, 10) - 1) * parseInt(pageSize as string, 10),
       take: parseInt(pageSize as string, 10),
@@ -302,21 +302,21 @@ export default class AuthController {
         createdAt: 'DESC',
       },
     })
-    const total = await userRepository.count()
+    const total = await AdminRepository.count()
     ctx.success('获取成功！', { list, total })
   }
 
-  static async getUserDetail(ctx: Context, next: Next){
+  static async getAdminDetail(ctx: Context, next: Next){
     const {id} = ctx.query
     if(!id) {
       ctx.fail('参数错误！')
       return await next()
     }
-    const userRepository = getManager().getRepository(User)
-    const user = await userRepository.findOne(id as string, {
+    const AdminRepository = getManager().getRepository(Admin)
+    const admin = await AdminRepository.findOne(id as string, {
       relations: ['roles'],
     })
-    ctx.success('获取成功！', user)
+    ctx.success('获取成功！', admin)
     return await next()
   }
 
@@ -327,7 +327,7 @@ export default class AuthController {
     return await next()
   }
 
-  static async createUser(ctx: Context, next: Next) {
+  static async createAdmin(ctx: Context, next: Next) {
     const { name, email, roleIds } = ctx.request.body as any
     if (!name || !email || !roleIds) {
       ctx.fail('参数错误！')
@@ -338,8 +338,8 @@ export default class AuthController {
       return await next()
     }
     
-    const userRepository = getManager().getRepository(User)
-    if(await userRepository.findOne({where: {email}})){
+    const AdminRepository = getManager().getRepository(Admin)
+    if(await AdminRepository.findOne({where: {email}})){
       ctx.fail('该邮箱已经存在，请检查！')
       return await next()
     }
@@ -348,14 +348,14 @@ export default class AuthController {
     const roles = await roleRepository.findByIds(roleIds)
 
     const pwd = generateTmpPwd(8)
-    const user = new User()
-    user.name = name
-    user.password = await hash(pwd)
-    user.email = email
-    user.userType = 1
-    user.roles = roles
-    user.creator = ctx.requester
-    await userRepository.save(user)
+    const admin = new Admin()
+    admin.name = name
+    admin.password = await hash(pwd)
+    admin.email = email
+    admin.adminType = 1
+    admin.roles = roles
+    admin.creator = ctx.requestAdmin
+    await AdminRepository.save(admin)
     await sendMail({
       subject: '临时密码',
       email,
@@ -365,53 +365,53 @@ export default class AuthController {
     return await next()
   }
 
-  static async updateUser(ctx: Context, next: Next) {
+  static async updateAdmin(ctx: Context, next: Next) {
     const { id, name, email, status, roleIds } = ctx.request.body as any
     if (!id || !name || !email || !roleIds) {
       ctx.fail('参数错误！')
       return await next()
     }
 
-    const userRepository = getManager().getRepository(User)
-    const user = await userRepository.findOne(id, {
+    const AdminRepository = getManager().getRepository(Admin)
+    const admin = await AdminRepository.findOne(id, {
       relations: ['roles'],
     })
-    if (!user) {
+    if (!admin) {
       ctx.fail('未找到该用户！')
       return await next()
     }
     const roleRepository = getManager().getRepository(Role)
     const roles = await roleRepository.findByIds(roleIds)
-    user.name = name
-    user.email = email
-    user.status = status
-    user.roles = roles
-    user.creator = ctx.requester
-    await userRepository.save(user)
+    admin.name = name
+    admin.email = email
+    admin.status = status
+    admin.roles = roles
+    admin.creator = ctx.requestAdmin
+    await AdminRepository.save(admin)
     ctx.success('更新成功！')
     return await next()
   }
 
-  static async resetUserPwd(ctx: Context, next: Next) {
+  static async resetAdminPwd(ctx: Context, next: Next) {
     const { id } = ctx.request.body as any
     if (!id) {
       ctx.fail('参数错误！')
       return await next()
     }
-    const userRepository = getManager().getRepository(User)
-    const user = await userRepository.findOne(id)
-    if (!user) {
+    const AdminRepository = getManager().getRepository(Admin)
+    const admin = await AdminRepository.findOne(id)
+    if (!admin) {
       ctx.fail('未找到该用户！')
       return await next()
     }
     const newPwd = generateTmpPwd(8)
-    user.password = await hash(newPwd)
+    admin.password = await hash(newPwd)
     await sendMail({
       subject: '重置密码',
-      email: user.email,
+      email: admin.email,
       text: `您好，您的${envConfig.systemInfo.name}账户，密码已重置为：${newPwd}，请尽快登录系统（${envConfig.systemInfo.loginUrl}）修改密码！`
     })
-    await userRepository.save(user)
+    await AdminRepository.save(admin)
     ctx.success('重置成功！')
     return await next()
   }
@@ -426,13 +426,13 @@ export default class AuthController {
       ctx.fail('邮箱格式错误！')
       return await next()
     }
-    const userRepository = getManager().getRepository(User)
-    const user = await userRepository.findOne({
+    const AdminRepository = getManager().getRepository(Admin)
+    const admin = await AdminRepository.findOne({
       where: {
         email
       }
     })
-    if (!user) {
+    if (!admin) {
       ctx.fail('该邮箱不存在，请检查！')
       return await next()
     }
@@ -458,13 +458,13 @@ export default class AuthController {
       ctx.fail('邮箱格式错误！')
       return await next()
     }
-    const userRepository = getManager().getRepository(User)
-    const user = await userRepository.findOne({
+    const AdminRepository = getManager().getRepository(Admin)
+    const admin = await AdminRepository.findOne({
       where: {
         email
       }
     })
-    if (!user) {
+    if (!admin) {
       ctx.fail('该邮箱不存在，请检查！')
       return await next()
     }
@@ -479,25 +479,25 @@ export default class AuthController {
       return await next()
     }
 
-    user.password = await hash(newPassword)
-    await userRepository.save(user)
+    admin.password = await hash(newPassword)
+    await AdminRepository.save(admin)
     ctx.success('修改密码成功！')
     return await next()
   }
 
-  static async deleteUser(ctx: Context, next: Next) {
+  static async deleteAdmin(ctx: Context, next: Next) {
     const { id } = ctx.request.body as any
     if (!id) {
       ctx.fail('参数错误！')
       return await next()
     }
-    const userRepository = getManager().getRepository(User)
-    const user = await userRepository.findOne(id)
-    if (!user) {
+    const AdminRepository = getManager().getRepository(Admin)
+    const admin = await AdminRepository.findOne(id)
+    if (!admin) {
       ctx.fail('未找到该用户！')
       return await next()
     }
-    await userRepository.remove(user)
+    await AdminRepository.remove(admin)
     ctx.success('删除用户成功！')
     return await next()
   }
@@ -508,34 +508,34 @@ export default class AuthController {
       ctx.fail('参数错误！')
       return await next()
     }
-    const userRepository = getManager().getRepository(User)
-    const user = await userRepository.findOne(id)
-    if (!user) {
+    const AdminRepository = getManager().getRepository(Admin)
+    const admin = await AdminRepository.findOne(id)
+    if (!admin) {
       ctx.fail('未找到该用户！')
       return await next()
     }
-    user.avatar = avatar
-    await userRepository.save(user)
+    admin.avatar = avatar
+    await AdminRepository.save(admin)
     ctx.success('更新头像成功！')
     return await next()
   }
 
-  static async getUserAuth(ctx: Context, next: Next) {
+  static async getAdminAuth(ctx: Context, next: Next) {
     const { id } = ctx.query
     if (!id) {
       ctx.fail('参数错误！')
       return await next()
     }
-    const userRepository = getManager().getRepository(User)
-    const user = await userRepository.findOne(id as string, {
+    const AdminRepository = getManager().getRepository(Admin)
+    const admin = await AdminRepository.findOne(id as string, {
       relations: ['roles']
     })
-    if(!user){
+    if(!admin){
       ctx.fail('未找到该用户！')
       return await next()
     }
 
-    const auth = await userRepository.query(`select o.name as operationName, o.key as operationKey, p.path as pagePath from (SELECT * from role_operation where role_id in (select role_id from user_role where user_id = ${id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id LEFT JOIN pages as p on p.id = o.page_id ORDER BY pagePath`)
+    const auth = await AdminRepository.query(`select o.name as operationName, o.key as operationKey, p.path as pagePath from (SELECT * from role_operation where role_id in (select role_id from admin_role where admin_id = ${id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id LEFT JOIN pages as p on p.id = o.page_id ORDER BY pagePath`)
     let res: {[key: string]: Array<{operationKey: string, operationName: string}>} = {}
     auth.forEach((item: {operationKey: string, operationName: string, pagePath: string})=>{
       if(!res[item.pagePath]) {
@@ -552,7 +552,7 @@ export default class AuthController {
     })
 
     ctx.success('获取成功！', {
-      user,
+      admin,
       auth: res
     })
     return await next()

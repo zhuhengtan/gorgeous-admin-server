@@ -43,4 +43,6 @@
     ttl: 60 * 5,  //过期时间
     db: 0
   },
+  staticPath: '', // 静态资源放在服务器上的位置
+  staticPrefix: '', // 拼接的静态资源url前缀
 };

@@ -2,8 +2,8 @@
 import { Role } from './role'
 import moment from 'moment'
 
-@Entity('users')
-export class User {
+@Entity('admins')
+export class Admin {
   @PrimaryGeneratedColumn()
   id: number
 
@@ -17,11 +17,11 @@ export class User {
   email: string
 
   @Column({
-    name: 'user_type',
+    name: 'admin_type',
     comment: '0系统用户，1手动创建用户',
     default: 1,
   })
-  userType: number
+  adminType: number
 
   @Column({
     comment: '状态：1正常，0禁用',
@@ -36,9 +36,9 @@ export class User {
 
   @ManyToMany(() => Role)
   @JoinTable({
-    name: 'user_role',
+    name: 'admin_role',
     joinColumns: [{
-      name: 'user_id'
+      name: 'admin_id'
     }],
     inverseJoinColumns: [{
       name: 'role_id'
@@ -46,11 +46,11 @@ export class User {
   })
   roles: Role[];
 
-  @OneToOne(() => User)
+  @OneToOne(() => Admin)
   @JoinColumn({
     name: 'creator_uid'
   })
-  creator: User
+  creator: Admin
 
   @CreateDateColumn({
     name: 'created_at',

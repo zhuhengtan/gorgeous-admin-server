@@ -1,4 +1,4 @@
-import Koa, { Next } from 'koa'
+import Koa from 'koa'
 import cors from '@koa/cors'
 import bodyParser from 'koa-bodyparser'
 import { createConnection } from 'typeorm'
@@ -8,14 +8,12 @@ import formatResponse from './middlewares/formatResponse'
 import sign from './middlewares/sign'
 import auth from './middlewares/auth'
 
-import { router } from './routes'
+import { toBRouter } from './routes/toBRoutes'
 import { logger } from './logger'
 import { JWT_SECRET } from './utils/constants'
 
 import envConfig from '../env/index'
-import { Context } from 'koa'
-import { User } from './entity/user'
-import { getManager } from 'typeorm'
+import requestAdmin from './middlewares/requestAdmin'
 
 export class App {
   private app: Koa;
@@ -69,25 +67,21 @@ export class App {
       }))
 
       // 将请求者用户信息放在ctx上下文中
-      this.app.use(async (ctx: Context, next: Next) => {
-        if (ctx.state.user) {
-          const re = getManager().getRepository(User)
-          ctx.requester = await re.findOne(ctx.state.user.id)
-        }
-        await next()
-      })
+      this.app.use(requestAdmin().unless({
+        path: [/^\/api\/c/,]
+      }))
 
       // 鉴权
       this.app.use(auth().unless({
         path: [
           '/api/auth/login',
-          '/api/auth/user-auth',
+          '/api/auth/admin-auth',
         ]
       }))
 
       // 导入路由
-      this.app.use(router.routes())
-      this.app.use(router.allowedMethods())
+      this.app.use(toBRouter.routes())
+      this.app.use(toBRouter.allowedMethods())
     }).catch((err: string) => {
       console.log('数据库链接错误：', err)
     })

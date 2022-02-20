@@ -437,6 +437,12 @@ export default class AuthController {
       return await next()
     }
 
+    const tmp = await codeRedis.get(email)
+    if(tmp) {
+      ctx.fail('验证码已经发送，请稍后尝试再次发送！')
+      return await next()
+    }
+
     const code = getRandomCode(6)
     await sendMail({
       subject: '修改密码',

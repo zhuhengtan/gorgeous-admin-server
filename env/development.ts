@@ -36,12 +36,12 @@
     },
     from: '"示例发件人" <example@163.com>',
   },
-  codeRedis: {// 存储验证码的redis
-    port: 6380,          // Redis port
-    host: '127.0.0.1',   // Redis host
+  redis: {
+    port: 0,          // Redis port
+    host: '',   // Redis host
+    db: 0,
     prefix: 'gorgeous-admin-server-code:', //存诸前缀
     ttl: 60 * 5,  //过期时间
-    db: 0
   },
   staticPath: '', // 静态资源放在服务器上的位置
   staticPrefix: '', // 拼接的静态资源url前缀

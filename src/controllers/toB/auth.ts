@@ -13,7 +13,7 @@ import { Role } from '../../entity/toB/role'
 import { generateTmpPwd, getRandomCode } from '../../utils'
 import { sendMail } from '../../utils/sendEmail'
 import { isEmail } from '../../utils/check'
-import { codeRedis } from '../../utils/redis'
+import { redisSet, redisGet } from '../../utils/redis'
 
 export default class AuthController {
   static async login(ctx: Context, next: Next) {
@@ -437,7 +437,7 @@ export default class AuthController {
       return await next()
     }
 
-    const tmp = await codeRedis.get(email)
+    const tmp = await redisGet(email)
     if(tmp) {
       ctx.fail('验证码已经发送，请稍后尝试再次发送！')
       return await next()
@@ -449,13 +449,20 @@ export default class AuthController {
       email: email,
       text: `您好，您的${envConfig.systemInfo.name}账户申请修改密码，验证码为：${code}`
     })
-    codeRedis.set(email, code)
+    try{
+      await redisSet(email, code)
+    } catch(e) {
+      console.log(e)
+    }
     ctx.success('获取成功！')
     return await next()
   }
 
   static async changePwd(ctx: Context, next: Next) {
     const { email, code, newPassword } = ctx.request.body as any
+
+    console.log(email, code, newPassword)
+
     if (!code || !email || !newPassword) {
       ctx.fail('参数错误！')
       return await next()
@@ -475,7 +482,7 @@ export default class AuthController {
       return await next()
     }
 
-    const savedCode = await codeRedis.get(email)
+    const savedCode = await redisGet(email)
     if (!savedCode) {
       ctx.fail('验证码已过期，请再试一次！')
       return await next()

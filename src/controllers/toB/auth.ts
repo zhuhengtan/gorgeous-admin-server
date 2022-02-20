@@ -17,14 +17,14 @@ import { codeRedis } from '../../utils/redis'
 
 export default class AuthController {
   static async login(ctx: Context, next: Next) {
-    const AdminRepository = getManager().getRepository(Admin)
+    const adminRepository = getManager().getRepository(Admin)
     const { email, password } = ctx.request.body as any
     if (!email || !password) {
       ctx.fail('参数错误！')
       return await next()
     }
 
-    const admin = await AdminRepository
+    const admin = await adminRepository
       .createQueryBuilder()
       .where({ email })
       .addSelect('Admin.password')
@@ -293,8 +293,8 @@ export default class AuthController {
 
   static async getAdminList(ctx: Context, next: Next) {
     const { page = 1, pageSize = 10 } = ctx.query
-    const AdminRepository = getManager().getRepository(Admin)
-    const list = await AdminRepository.find({
+    const adminRepository = getManager().getRepository(Admin)
+    const list = await adminRepository.find({
       relations: ['roles'],
       skip: (parseInt(page as string, 10) - 1) * parseInt(pageSize as string, 10),
       take: parseInt(pageSize as string, 10),
@@ -302,7 +302,7 @@ export default class AuthController {
         createdAt: 'DESC',
       },
     })
-    const total = await AdminRepository.count()
+    const total = await adminRepository.count()
     ctx.success('获取成功！', { list, total })
   }
 
@@ -312,8 +312,8 @@ export default class AuthController {
       ctx.fail('参数错误！')
       return await next()
     }
-    const AdminRepository = getManager().getRepository(Admin)
-    const admin = await AdminRepository.findOne(id as string, {
+    const adminRepository = getManager().getRepository(Admin)
+    const admin = await adminRepository.findOne(id as string, {
       relations: ['roles'],
     })
     ctx.success('获取成功！', admin)
@@ -338,8 +338,8 @@ export default class AuthController {
       return await next()
     }
     
-    const AdminRepository = getManager().getRepository(Admin)
-    if(await AdminRepository.findOne({where: {email}})){
+    const adminRepository = getManager().getRepository(Admin)
+    if(await adminRepository.findOne({where: {email}})){
       ctx.fail('该邮箱已经存在，请检查！')
       return await next()
     }
@@ -355,7 +355,7 @@ export default class AuthController {
     admin.adminType = 1
     admin.roles = roles
     admin.creator = ctx.requestAdmin
-    await AdminRepository.save(admin)
+    await adminRepository.save(admin)
     await sendMail({
       subject: '临时密码',
       email,
@@ -372,8 +372,8 @@ export default class AuthController {
       return await next()
     }
 
-    const AdminRepository = getManager().getRepository(Admin)
-    const admin = await AdminRepository.findOne(id, {
+    const adminRepository = getManager().getRepository(Admin)
+    const admin = await adminRepository.findOne(id, {
       relations: ['roles'],
     })
     if (!admin) {
@@ -387,7 +387,7 @@ export default class AuthController {
     admin.status = status
     admin.roles = roles
     admin.creator = ctx.requestAdmin
-    await AdminRepository.save(admin)
+    await adminRepository.save(admin)
     ctx.success('更新成功！')
     return await next()
   }
@@ -398,8 +398,8 @@ export default class AuthController {
       ctx.fail('参数错误！')
       return await next()
     }
-    const AdminRepository = getManager().getRepository(Admin)
-    const admin = await AdminRepository.findOne(id)
+    const adminRepository = getManager().getRepository(Admin)
+    const admin = await adminRepository.findOne(id)
     if (!admin) {
       ctx.fail('未找到该用户！')
       return await next()
@@ -411,7 +411,7 @@ export default class AuthController {
       email: admin.email,
       text: `您好，您的${envConfig.systemInfo.name}账户，密码已重置为：${newPwd}，请尽快登录系统（${envConfig.systemInfo.loginUrl}）修改密码！`
     })
-    await AdminRepository.save(admin)
+    await adminRepository.save(admin)
     ctx.success('重置成功！')
     return await next()
   }
@@ -426,8 +426,8 @@ export default class AuthController {
       ctx.fail('邮箱格式错误！')
       return await next()
     }
-    const AdminRepository = getManager().getRepository(Admin)
-    const admin = await AdminRepository.findOne({
+    const adminRepository = getManager().getRepository(Admin)
+    const admin = await adminRepository.findOne({
       where: {
         email
       }
@@ -464,8 +464,8 @@ export default class AuthController {
       ctx.fail('邮箱格式错误！')
       return await next()
     }
-    const AdminRepository = getManager().getRepository(Admin)
-    const admin = await AdminRepository.findOne({
+    const adminRepository = getManager().getRepository(Admin)
+    const admin = await adminRepository.findOne({
       where: {
         email
       }
@@ -486,7 +486,7 @@ export default class AuthController {
     }
 
     admin.password = await hash(newPassword)
-    await AdminRepository.save(admin)
+    await adminRepository.save(admin)
     ctx.success('修改密码成功！')
     return await next()
   }
@@ -497,13 +497,13 @@ export default class AuthController {
       ctx.fail('参数错误！')
       return await next()
     }
-    const AdminRepository = getManager().getRepository(Admin)
-    const admin = await AdminRepository.findOne(id)
+    const adminRepository = getManager().getRepository(Admin)
+    const admin = await adminRepository.findOne(id)
     if (!admin) {
       ctx.fail('未找到该用户！')
       return await next()
     }
-    await AdminRepository.remove(admin)
+    await adminRepository.remove(admin)
     ctx.success('删除用户成功！')
     return await next()
   }
@@ -514,14 +514,14 @@ export default class AuthController {
       ctx.fail('参数错误！')
       return await next()
     }
-    const AdminRepository = getManager().getRepository(Admin)
-    const admin = await AdminRepository.findOne(id)
+    const adminRepository = getManager().getRepository(Admin)
+    const admin = await adminRepository.findOne(id)
     if (!admin) {
       ctx.fail('未找到该用户！')
       return await next()
     }
     admin.avatar = avatar
-    await AdminRepository.save(admin)
+    await adminRepository.save(admin)
     ctx.success('更新头像成功！')
     return await next()
   }
@@ -532,8 +532,8 @@ export default class AuthController {
       ctx.fail('参数错误！')
       return await next()
     }
-    const AdminRepository = getManager().getRepository(Admin)
-    const admin = await AdminRepository.findOne(id as string, {
+    const adminRepository = getManager().getRepository(Admin)
+    const admin = await adminRepository.findOne(id as string, {
       relations: ['roles']
     })
     if(!admin){
@@ -541,7 +541,7 @@ export default class AuthController {
       return await next()
     }
 
-    const auth = await AdminRepository.query(`select o.name as operationName, o.key as operationKey, p.path as pagePath from (SELECT * from role_operation where role_id in (select role_id from admin_role where admin_id = ${id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id LEFT JOIN pages as p on p.id = o.page_id ORDER BY pagePath`)
+    const auth = await adminRepository.query(`select o.name as operationName, o.key as operationKey, p.path as pagePath from (SELECT * from role_operation where role_id in (select role_id from admin_role where admin_id = ${id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id LEFT JOIN pages as p on p.id = o.page_id ORDER BY pagePath`)
     let res: {[key: string]: Array<{operationKey: string, operationName: string}>} = {}
     auth.forEach((item: {operationKey: string, operationName: string, pagePath: string})=>{
       if(!res[item.pagePath]) {

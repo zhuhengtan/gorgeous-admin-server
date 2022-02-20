@@ -19,7 +19,7 @@ export const config = {
     database: "",
     synchronize: true,
     entities: [
-      "dist/src/entity/*.js"
+      "dist/src/entity/*/*.js"
     ],
     cli: {
       entitiesDir: "dist/src/entity"

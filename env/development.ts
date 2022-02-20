@@ -19,7 +19,7 @@
     database: "gorgeous_admin_server",
     synchronize: true,
     entities: [
-      "src/entity/*.ts"
+      "src/entity/*/*.ts"
     ],
     cli: {
       entitiesDir: "src/entity"

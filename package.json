@@ -11,7 +11,7 @@
     "stop": "pm2 stop gorgeous-admin-server"
   },
   "keywords": [
-    "koa",
+    "koa2",
     "typeorm"
   ],
   "author": "hunterzhu",

@@ -31,6 +31,10 @@ export default class AuthController {
       .getOne()
     if (!admin) {
       ctx.fail(`没有该用户，请向${envConfig.adminEmail}发送邮件申请权限！`)
+      return await next()
+    } else if(admin.status === 0) {
+      ctx.fail('该账户已封禁，请联系管理员！')
+      return await next()
     } else if (await verify(admin.password, password)) {
       ctx.success('登录成功！', {
         admin: {

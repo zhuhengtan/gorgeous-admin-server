@@ -6,10 +6,10 @@ import { toBRouter } from '../../routes/toBRoutes'
 
 import { JWT_SECRET } from '../../utils/constants'
 import envConfig from '../../../env/index'
-import { Admin } from '../../entity/toB/admin'
-import { Page } from '../../entity/toB/page'
-import { Operation } from '../../entity/toB/operation'
-import { Role } from '../../entity/toB/role'
+import { Admin } from '../../entity/admin'
+import { Page } from '../../entity/page'
+import { Operation } from '../../entity/operation'
+import { Role } from '../../entity/role'
 import { generateTmpPwd, getRandomCode } from '../../utils'
 import { sendMail } from '../../utils/sendEmail'
 import { isEmail } from '../../utils/check'
@@ -90,8 +90,8 @@ export default class AuthController {
   }
 
   static async createPage(ctx: Context, next: Next) {
-    const { name, path, operations } = ctx.request.body as any
-    if (!name || !path || !operations) {
+    const { name, path, operations, pageType, content } = ctx.request.body as any
+    if (!name || !path || !operations || !pageType) {
       ctx.fail('参数错误！')
       return await next()
     }
@@ -110,6 +110,7 @@ export default class AuthController {
     const page = new Page()
     page.name = name
     page.path = path
+    page.pageType = pageType
     page.operations = operationEntities
     await pageRepository.save(page)
     ctx.success('创建成功！')

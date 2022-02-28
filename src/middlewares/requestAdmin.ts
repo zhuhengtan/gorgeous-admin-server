@@ -1,6 +1,6 @@
 import { Context, Next } from 'koa';
 import { getManager } from 'typeorm'
-import { Admin } from '../entity/toB/admin'
+import { Admin } from '../entity/admin'
 const unless = require('koa-unless')
 
 export default function () {

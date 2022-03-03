@@ -18,6 +18,7 @@
   "license": "ISC",
   "devDependencies": {
     "@types/config": "^0.0.40",
+    "@types/inflected": "^1.1.29",
     "@types/ioredis": "^4.28.8",
     "@types/jsonwebtoken": "^8.5.1",
     "@types/koa": "^2.13.1",
@@ -28,8 +29,13 @@
     "@types/md5": "^2.3.1",
     "@types/node": "^14.14.37",
     "@types/nodemailer": "^6.4.4",
+    "@types/nunjucks": "^3.2.1",
+    "@types/shelljs": "^0.8.11",
     "cross-env": "^7.0.3",
+    "inflected": "^2.1.0",
     "nodemon": "^2.0.7",
+    "nunjucks": "^3.2.3",
+    "shelljs": "^0.8.5",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   },

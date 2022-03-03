@@ -1,0 +1,90 @@
+import { Context, Next } from 'koa'
+import { getManager } from 'typeorm'
+import { {{className}} } from '../../entity/{{entityName}}'
+
+export default class {{className}}Controller {
+  public static async create(ctx: Context, next: Next){
+    const { {{entityName}}, ...otherProps } = ctx.request.body as any
+
+    const {{entityName}}Repository = getManager().getRepository({{className}})
+    const {{entityName}}Entity = new {{className}}()
+    for (const key of otherProps) {
+      if({{entityName}}Entity.hasOwnProperty(key) && otherProps.hasOwnProperty(key)) {
+        ({{entityName}}Entity as any)[key] = otherProps[key]
+      }
+    }
+    await {{entityName}}Repository.save({{entityName}}Entity)
+    
+    ctx.success('创建成功！')
+    return await next()
+  }
+
+  public static async list(ctx: Context, next: Next) {
+    const { page = 1, pageSize = 10 } = ctx.query
+    const {{entityName}}Repository = getManager().getRepository({{className}})
+    const list = await {{entityName}}Repository.find({
+      skip: (parseInt(page as string, 10) - 1) * parseInt(pageSize as string, 10),
+      take: parseInt(pageSize as string, 10),
+      order: {
+        createdAt: 'DESC',
+      },
+    })
+    const total = await {{entityName}}Repository.count()
+    ctx.success('获取成功！', { list, total })
+    return await next()
+  }
+
+  public static async detail(ctx: Context, next: Next) {
+    const { id } = ctx.query
+    if (!id) {
+      ctx.fail('参数错误！')
+      return await next()
+    }
+    const {{entityName}}Repository = getManager().getRepository({{className}})
+    let {{entityName}}Entity = await {{entityName}}Repository.findOne({
+      where: { id },
+    })
+    ctx.success('获取成功！', {{entityName}}Entity)
+    return await next()
+  }
+
+  public static async update(ctx: Context, next: Next){
+    const { id, ...otherProps } = ctx.request.body as any
+    if (!id) {
+      ctx.fail('id必传！')
+      return await next()
+    }
+
+    const {{entityName}}Repository = getManager().getRepository({{className}})
+    const {{entityName}}Entity = await {{entityName}}Repository.findOne(id)
+    if (!{{entityName}}Entity) {
+      ctx.fail('未找到该条记录！')
+      return await next()
+    }
+    for (const key of otherProps) {
+      if({{entityName}}Entity.hasOwnProperty(key) && otherProps.hasOwnProperty(key)) {
+        ({{entityName}}Entity as any)[key] = otherProps[key]
+      }
+    }
+    ctx.success('更新成功！')
+    return await next()
+  }
+
+  public static async delete(ctx: Context, next: Next){
+    const { id } = ctx.request.body as any
+    if (!id || !id.length) {
+      ctx.fail('参数错误！')
+      return await next()
+    }
+
+    const {{entityName}}Repository = getManager().getRepository({{className}})
+    const {{entityName}}Entity = await {{entityName}}Repository.findOne(id)
+    if (!{{entityName}}Entity) {
+      ctx.fail('未找到该角色！')
+      return await next()
+    }
+    await {{entityName}}Repository.softRemove({{entityName}}Entity)
+    ctx.success('删除角色成功！')
+    return await next()
+  }
+}

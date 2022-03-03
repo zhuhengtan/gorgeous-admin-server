@@ -14,6 +14,7 @@ import { generateTmpPwd, getRandomCode } from '../../utils'
 import { sendMail } from '../../utils/sendEmail'
 import { isEmail } from '../../utils/check'
 import { redisSet, redisGet } from '../../utils/redis'
+import { generateCURD, Field, Column } from '../../utils/generateCode'
 
 export default class AuthController {
   static async login(ctx: Context, next: Next) {
@@ -32,7 +33,7 @@ export default class AuthController {
     if (!admin) {
       ctx.fail(`没有该用户，请向${envConfig.adminEmail}发送邮件申请权限！`)
       return await next()
-    } else if(admin.status === 0) {
+    } else if (admin.status === 0) {
       ctx.fail('该账户已封禁，请联系管理员！')
       return await next()
     } else if (await verify(admin.password, password)) {
@@ -77,7 +78,7 @@ export default class AuthController {
     }
     const pageRepository = getManager().getRepository(Page)
     let page = await pageRepository.findOne({
-      where: {id},
+      where: { id },
       relations: ['operations'],
     })
     ctx.success('获取成功！', page)
@@ -90,12 +91,65 @@ export default class AuthController {
   }
 
   static async createPage(ctx: Context, next: Next) {
-    const { name, path, operations, pageType, content } = ctx.request.body as any
-    if (!name || !path || !operations || !pageType) {
+    let { name, path, operations, pageType, entityName, fields } = ctx.request.body as any
+
+    if (!name || !path || !pageType) {
       ctx.fail('参数错误！')
       return await next()
     }
     const operationRepository = getManager().getRepository(Operation)
+    const pageRepository = getManager().getRepository(Page)
+
+    if(pageType === 0) {
+      if(!operations) {
+        ctx.fail('参数错误！')
+        return await next()
+      }
+    }else{ // pageType 1 2
+      if(!fields || !entityName) {
+        ctx.fail('参数错误！')
+        return await next()
+      }
+      const res = await generateCURD({
+        entityName,
+        columns: fields && fields.length && fields.map((field: Field) => {
+          const res: Column = {
+            name: field.name,
+            type: field.type,
+            columnName: field.columnName,
+            columnType: field.columnType,
+            comment: field.title + field.comment
+          }
+          let defaultValue
+          if (field.columnDefaultValue) {
+            switch (field.type) {
+              case 'number':
+                defaultValue = Number(field.columnDefaultValue)
+                break
+              case 'string':
+                defaultValue = `\'${String(field.columnDefaultValue)}\'`
+                break
+              case 'boolean':
+                defaultValue = field.columnDefaultValue ? true : false
+              default:
+                break
+            }
+            res.default = defaultValue
+          }
+          return res
+        })
+      }, ctx, next)
+      if (res === -1) {
+        ctx.fail('该实体已存在，请检查！')
+        return await next()
+      }
+      if (res === -2) {
+        ctx.fail('该控制器已存在，请检查')
+        return await next()
+      }
+      operations = res
+    }
+    
     const operationEntities = operations.map((item: any) => {
       const tmp = new Operation()
       tmp.name = item.name
@@ -105,12 +159,13 @@ export default class AuthController {
       return tmp
     })
     await operationRepository.save(operationEntities)
-
-    const pageRepository = getManager().getRepository(Page)
     const page = new Page()
     page.name = name
     page.path = path
     page.pageType = pageType
+    if (pageType === 1) {
+      page.content = JSON.stringify(fields)
+    }
     page.operations = operationEntities
     await pageRepository.save(page)
     ctx.success('创建成功！')
@@ -137,9 +192,9 @@ export default class AuthController {
     await pageRepository.save(page)
 
     const operationRepository = getManager().getRepository(Operation)
-    const tmp = operations.map((operation: any)=>{
+    const tmp = operations.map((operation: any) => {
       const operationEntity = new Operation()
-      if(operation.id && String(operation.id).split('_').length === 1) {
+      if (operation.id && String(operation.id).split('_').length === 1) {
         operationEntity.id = operation.id
       }
       operationEntity.name = operation.name
@@ -150,7 +205,7 @@ export default class AuthController {
       return operationEntity
     })
     await operationRepository.save(tmp)
-    
+
     ctx.success('更新成功！')
     return await next()
   }
@@ -212,7 +267,7 @@ export default class AuthController {
     }
     const roleRepository = getManager().getRepository(Role)
     let role = await roleRepository.findOne({
-      where: {id},
+      where: { id },
       relations: ['operations'],
     })
     ctx.success('获取成功！', role)
@@ -229,7 +284,7 @@ export default class AuthController {
   }
 
   static async createRole(ctx: Context, next: Next) {
-    const { name, description='', operationIds } = ctx.request.body as any
+    const { name, description = '', operationIds } = ctx.request.body as any
     if (!name || !operationIds) {
       ctx.fail('参数错误！')
       return await next()
@@ -250,7 +305,7 @@ export default class AuthController {
   }
 
   static async updateRole(ctx: Context, next: Next) {
-    const { id, name, description='', operationIds } = ctx.request.body as any
+    const { id, name, description = '', operationIds } = ctx.request.body as any
     if (!id || !name || !operationIds) {
       ctx.fail('参数错误！')
       return await next()
@@ -282,7 +337,7 @@ export default class AuthController {
       ctx.fail('参数错误！')
       return await next()
     }
-    
+
     const roleRepository = getManager().getRepository(Role)
     const role = await roleRepository.findOne(id, {
       relations: ['operations'],
@@ -311,9 +366,9 @@ export default class AuthController {
     ctx.success('获取成功！', { list, total })
   }
 
-  static async getAdminDetail(ctx: Context, next: Next){
-    const {id} = ctx.query
-    if(!id) {
+  static async getAdminDetail(ctx: Context, next: Next) {
+    const { id } = ctx.query
+    if (!id) {
       ctx.fail('参数错误！')
       return await next()
     }
@@ -342,9 +397,9 @@ export default class AuthController {
       ctx.fail('邮箱格式错误！')
       return await next()
     }
-    
+
     const adminRepository = getManager().getRepository(Admin)
-    if(await adminRepository.findOne({where: {email}})){
+    if (await adminRepository.findOne({ where: { email } })) {
       ctx.fail('该邮箱已经存在，请检查！')
       return await next()
     }
@@ -443,7 +498,7 @@ export default class AuthController {
     }
 
     const tmp = await redisGet(email)
-    if(tmp) {
+    if (tmp) {
       ctx.fail('验证码已经发送，请稍后尝试再次发送！')
       return await next()
     }
@@ -454,9 +509,9 @@ export default class AuthController {
       email: email,
       text: `您好，您的${envConfig.systemInfo.name}账户申请修改密码，验证码为：${code}`
     })
-    try{
+    try {
       await redisSet(email, code)
-    } catch(e) {
+    } catch (e) {
       console.log(e)
     }
     ctx.success('获取成功！')
@@ -548,20 +603,20 @@ export default class AuthController {
     const admin = await adminRepository.findOne(id as string, {
       relations: ['roles']
     })
-    if(!admin){
+    if (!admin) {
       ctx.fail('未找到该用户！')
       return await next()
     }
 
     const auth = await adminRepository.query(`select o.name as operationName, o.key as operationKey, p.path as pagePath from (SELECT * from role_operation where role_id in (select role_id from admin_role where admin_id = ${id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id LEFT JOIN pages as p on p.id = o.page_id ORDER BY pagePath`)
-    let res: {[key: string]: Array<{operationKey: string, operationName: string}>} = {}
-    auth.forEach((item: {operationKey: string, operationName: string, pagePath: string})=>{
-      if(!res[item.pagePath]) {
+    let res: { [key: string]: Array<{ operationKey: string, operationName: string }> } = {}
+    auth.forEach((item: { operationKey: string, operationName: string, pagePath: string }) => {
+      if (!res[item.pagePath]) {
         res[item.pagePath] = [{
           operationKey: item.operationKey,
           operationName: item.operationName,
         }]
-      }else{
+      } else {
         res[item.pagePath].push({
           operationKey: item.operationKey,
           operationName: item.operationName,

@@ -71,14 +71,25 @@ export default class AuthController {
   }
 
   static async getPage(ctx: Context, next: Next) {
-    const { id } = ctx.query
-    if (!id) {
+    const { id, path } = ctx.query
+    console.log(path)
+    if (!id && !path) {
       ctx.fail('参数错误！')
       return await next()
     }
+    const where: {
+      id?: string
+      path?: string
+    } = {}
+    if(id) {
+      where.id = id as string
+    }
+    if(path) {
+      where.path = path as string
+    }
     const pageRepository = getManager().getRepository(Page)
     let page = await pageRepository.findOne({
-      where: { id },
+      where,
       relations: ['operations'],
     })
     ctx.success('获取成功！', page)
@@ -93,8 +104,8 @@ export default class AuthController {
   static async createPage(ctx: Context, next: Next) {
     let { name, path, operations, pageType, entityName, fields } = ctx.request.body as any
 
-    if (!name || !path || !pageType) {
-      ctx.fail('参数错误！')
+    if (!path) {
+      ctx.fail('path必填！')
       return await next()
     }
     const operationRepository = getManager().getRepository(Operation)
@@ -106,48 +117,7 @@ export default class AuthController {
         return await next()
       }
     }else{ // pageType 1 2
-      if(!fields || !entityName) {
-        ctx.fail('参数错误！')
-        return await next()
-      }
-      const res = await generateCURD({
-        entityName,
-        columns: fields && fields.length && fields.map((field: Field) => {
-          const res: Column = {
-            name: field.name,
-            type: field.type,
-            columnName: field.columnName,
-            columnType: field.columnType,
-            comment: field.title + field.comment
-          }
-          let defaultValue
-          if (field.columnDefaultValue) {
-            switch (field.type) {
-              case 'number':
-                defaultValue = Number(field.columnDefaultValue)
-                break
-              case 'string':
-                defaultValue = `\'${String(field.columnDefaultValue)}\'`
-                break
-              case 'boolean':
-                defaultValue = field.columnDefaultValue ? true : false
-              default:
-                break
-            }
-            res.default = defaultValue
-          }
-          return res
-        })
-      }, ctx, next)
-      if (res === -1) {
-        ctx.fail('该实体已存在，请检查！')
-        return await next()
-      }
-      if (res === -2) {
-        ctx.fail('该控制器已存在，请检查')
-        return await next()
-      }
-      operations = res
+      
     }
     
     const operationEntities = operations.map((item: any) => {
@@ -628,6 +598,56 @@ export default class AuthController {
       admin,
       auth: res
     })
+    return await next()
+  }
+
+  static async generateServerCRUD (ctx: Context, next: Next) {
+    const {
+      fields,
+      entityName,
+    } = ctx.request.body as any
+    if(!fields || !entityName) {
+      ctx.fail('参数错误！')
+      return await next()
+    }
+    const res = await generateCURD({
+      entityName,
+      columns: fields && fields.length && fields.map((field: Field) => {
+        const res: Column = {
+          name: field.name,
+          type: field.type,
+          columnName: field.columnName,
+          columnType: field.columnType,
+          comment: field.title + field.comment
+        }
+        let defaultValue
+        if (field.columnDefaultValue) {
+          switch (field.type) {
+            case 'number':
+              defaultValue = Number(field.columnDefaultValue)
+              break
+            case 'string':
+              defaultValue = `\'${String(field.columnDefaultValue)}\'`
+              break
+            case 'boolean':
+              defaultValue = field.columnDefaultValue ? true : false
+            default:
+              break
+          }
+          res.default = defaultValue
+        }
+        return res
+      })
+    }, ctx, next)
+    if (res === -1) {
+      ctx.fail('该实体已存在，请检查！')
+      return await next()
+    }
+    if (res === -2) {
+      ctx.fail('该控制器已存在，请检查')
+      return await next()
+    }
+    ctx.success('生成成功！请前往后端查看代码！')
     return await next()
   }
 }

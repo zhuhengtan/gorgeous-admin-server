@@ -61,7 +61,7 @@ CREATE TABLE `admins` (
 -- Records of admins
 -- ----------------------------
 BEGIN;
-INSERT INTO `admins` VALUES (1, '系统管理员', '$argon2i$v=19$m=4096,t=3,p=1$8IL7j3KWRKF7kyct/iOp+Q$xtZlFWZFUHzLlubcl/Q8xtniZw49YNRJqVduZziPDAg', 'zhuhengtan@126.com', 1, 1, '', CURRENT_TIMESTAMP, NULL);
+INSERT INTO `admins` VALUES (1, '系统管理员', '$argon2i$v=19$m=4096,t=3,p=1$8IL7j3KWRKF7kyct/iOp+Q$xtZlFWZFUHzLlubcl/Q8xtniZw49YNRJqVduZziPDAg', 'admin@gorgeous-admin.com', 1, 1, '', CURRENT_TIMESTAMP, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -107,6 +107,7 @@ INSERT INTO `operations` VALUES (17, '用户列表', 'view', 'GET /api/auth/user
 INSERT INTO `operations` VALUES (18, '全部角色', 'all-roles', 'GET /api/auth/all-roles', CURRENT_TIMESTAMP, 3, NULL);
 INSERT INTO `operations` VALUES (19, '重置密码', 'reset-password', 'POST /api/auth/user/reset-password', CURRENT_TIMESTAMP, 3, NULL);
 INSERT INTO `operations` VALUES (20, '用户详情', 'detail', 'GET /api/auth/user', CURRENT_TIMESTAMP, 3, NULL);
+INSERT INTO `operations` VALUES (21, '查看', 'view', '', CURRENT_TIMESTAMP, 4, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -128,6 +129,7 @@ BEGIN;
 INSERT INTO `pages` VALUES (1, '页面管理', '/auth/page', CURRENT_TIMESTAMP);
 INSERT INTO `pages` VALUES (2, '角色管理', '/auth/role', CURRENT_TIMESTAMP);
 INSERT INTO `pages` VALUES (3, '用户管理', '/auth/admin', CURRENT_TIMESTAMP);
+INSERT INTO `pages` VALUES (4, '生成实体及接口', '/auth/generate-server-crud', CURRENT_TIMESTAMP);
 COMMIT;
 
 -- ----------------------------
@@ -168,6 +170,7 @@ INSERT INTO `role_operation` VALUES (1, 17);
 INSERT INTO `role_operation` VALUES (1, 18);
 INSERT INTO `role_operation` VALUES (1, 19);
 INSERT INTO `role_operation` VALUES (1, 20);
+INSERT INTO `role_operation` VALUES (1, 21);
 COMMIT;
 
 -- ----------------------------

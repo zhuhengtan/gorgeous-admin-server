@@ -39,6 +39,8 @@ toBRouter.post('/auth/admin/change-password', AuthController.changePwd)
 toBRouter.post('/auth/update-avatar', AuthController.updateAvatar)
 toBRouter.get('/auth/admin-auth', AuthController.getAdminAuth)
 
+toBRouter.post('/auth/generate-server-crud', AuthController.generateServerCRUD)
+
 // TEMPLATE ROUTES TAG
 
 export { toBRouter }

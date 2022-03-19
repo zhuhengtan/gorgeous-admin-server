@@ -11,7 +11,7 @@
  Target Server Version : 50729
  File Encoding         : 65001
 
- Date: 20/02/2022 09:51:22
+ Date: 19/03/2022 09:56:07
 */
 
 SET NAMES utf8mb4;
@@ -35,7 +35,7 @@ CREATE TABLE `admin_role` (
 -- Records of admin_role
 -- ----------------------------
 BEGIN;
-INSERT INTO `admin_role` VALUES (1, 1);
+INSERT INTO `admin_role` (`admin_id`, `role_id`) VALUES (1, 1);
 COMMIT;
 
 -- ----------------------------
@@ -55,13 +55,13 @@ CREATE TABLE `admins` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `REL_a4b78db37a8fcafbe1431005ae` (`creator_uid`),
   CONSTRAINT `FK_a4b78db37a8fcafbe1431005ae1` FOREIGN KEY (`creator_uid`) REFERENCES `admins` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of admins
 -- ----------------------------
 BEGIN;
-INSERT INTO `admins` VALUES (1, '系统管理员', '$argon2i$v=19$m=4096,t=3,p=1$8IL7j3KWRKF7kyct/iOp+Q$xtZlFWZFUHzLlubcl/Q8xtniZw49YNRJqVduZziPDAg', 'admin@gorgeous-admin.com', 1, 1, '', CURRENT_TIMESTAMP, NULL);
+INSERT INTO `admins` (`id`, `name`, `password`, `email`, `admin_type`, `status`, `avatar`, `created_at`, `creator_uid`) VALUES (1, '系统管理员', '$argon2i$v=19$m=4096,t=3,p=1$8IL7j3KWRKF7kyct/iOp+Q$xtZlFWZFUHzLlubcl/Q8xtniZw49YNRJqVduZziPDAg', 'admin@gorgeous-admin.com', 1, 1, '', '2022-03-19 09:43:59.000000', NULL);
 COMMIT;
 
 -- ----------------------------
@@ -81,33 +81,33 @@ CREATE TABLE `operations` (
   KEY `FK_1fb259d97fa1be0bfe9affa0bea` (`page_id`),
   CONSTRAINT `FK_1fb259d97fa1be0bfe9affa0bea` FOREIGN KEY (`page_id`) REFERENCES `pages` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_8617941d945caf965bfae43cc72` FOREIGN KEY (`creator_uid`) REFERENCES `admins` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of operations
 -- ----------------------------
 BEGIN;
-INSERT INTO `operations` VALUES (1, '添加页面', 'add', 'POST /api/auth/page', CURRENT_TIMESTAMP, 1, NULL);
-INSERT INTO `operations` VALUES (2, '查看页面列表', 'view', 'GET /api/auth/pages', CURRENT_TIMESTAMP, 1, NULL);
-INSERT INTO `operations` VALUES (3, '删除页面', 'delete', 'DELETE /api/auth/page', CURRENT_TIMESTAMP, 1, NULL);
-INSERT INTO `operations` VALUES (4, '编辑页面', 'update', 'PUT /api/auth/page', CURRENT_TIMESTAMP, 1, NULL);
-INSERT INTO `operations` VALUES (5, '获取所有接口列表', 'get-all-apis', 'GET /api/auth/all-apis', CURRENT_TIMESTAMP, 1, NULL);
-INSERT INTO `operations` VALUES (6, '页面详情', 'detail', 'GET /api/auth/page', CURRENT_TIMESTAMP, 1, NULL);
-INSERT INTO `operations` VALUES (7, '获取角色列表', 'view', 'GET /api/auth/roles', CURRENT_TIMESTAMP, 2, NULL);
-INSERT INTO `operations` VALUES (8, '编辑角色', 'edit', 'PUT /api/auth/role', CURRENT_TIMESTAMP, 2, NULL);
-INSERT INTO `operations` VALUES (9, '创建角色', 'create', 'POST /api/auth/role', CURRENT_TIMESTAMP, 2, NULL);
-INSERT INTO `operations` VALUES (10, '删除角色', 'delete', 'DELETE /api/auth/role', CURRENT_TIMESTAMP, 2, NULL);
-INSERT INTO `operations` VALUES (11, '获取所有操作列表', 'get-all-operations', 'GET /api/auth/all-operations', CURRENT_TIMESTAMP, 2, NULL);
-INSERT INTO `operations` VALUES (12, '删除操作', 'delete-operation', 'DELETE /api/auth/operation', CURRENT_TIMESTAMP, 2, NULL);
-INSERT INTO `operations` VALUES (13, '角色详情', 'detail', 'GET /api/auth/role', CURRENT_TIMESTAMP, 2, NULL);
-INSERT INTO `operations` VALUES (14, '删除用户', 'delete', 'DELETE /api/auth/user', CURRENT_TIMESTAMP, 3, NULL);
-INSERT INTO `operations` VALUES (15, '编辑用户', 'update', 'PUT /api/auth/user', CURRENT_TIMESTAMP, 3, NULL);
-INSERT INTO `operations` VALUES (16, '新增用户', 'create', 'POST /api/auth/user', CURRENT_TIMESTAMP, 3, NULL);
-INSERT INTO `operations` VALUES (17, '用户列表', 'view', 'GET /api/auth/users', CURRENT_TIMESTAMP, 3, NULL);
-INSERT INTO `operations` VALUES (18, '全部角色', 'all-roles', 'GET /api/auth/all-roles', CURRENT_TIMESTAMP, 3, NULL);
-INSERT INTO `operations` VALUES (19, '重置密码', 'reset-password', 'POST /api/auth/user/reset-password', CURRENT_TIMESTAMP, 3, NULL);
-INSERT INTO `operations` VALUES (20, '用户详情', 'detail', 'GET /api/auth/user', CURRENT_TIMESTAMP, 3, NULL);
-INSERT INTO `operations` VALUES (21, '查看', 'view', '', CURRENT_TIMESTAMP, 4, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (1, '添加页面', 'add', 'POST /api/auth/page', '2022-03-19 09:43:59.000000', 1, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (2, '查看页面列表', 'view', 'GET /api/auth/pages', '2022-03-19 09:43:59.000000', 1, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (3, '删除页面', 'delete', 'DELETE /api/auth/page', '2022-03-19 09:43:59.000000', 1, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (4, '编辑页面', 'update', 'PUT /api/auth/page', '2022-03-19 09:43:59.000000', 1, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (5, '获取所有接口列表', 'get-all-apis', 'GET /api/auth/all-apis', '2022-03-19 09:43:59.000000', 1, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (6, '页面详情', 'detail', 'GET /api/auth/page', '2022-03-19 09:43:59.000000', 1, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (7, '获取角色列表', 'view', 'GET /api/auth/roles', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (8, '编辑角色', 'edit', 'PUT /api/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (9, '创建角色', 'create', 'POST /api/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (10, '删除角色', 'delete', 'DELETE /api/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (11, '获取所有操作列表', 'get-all-operations', 'GET /api/auth/all-operations', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (12, '删除操作', 'delete-operation', 'DELETE /api/auth/operation', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (13, '角色详情', 'detail', 'GET /api/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (14, '删除用户', 'delete', 'DELETE /api/auth/user', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (15, '编辑用户', 'update', 'PUT /api/auth/user', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (16, '新增用户', 'create', 'POST /api/auth/user', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (17, '用户列表', 'view', 'GET /api/auth/users', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (18, '全部角色', 'all-roles', 'GET /api/auth/all-roles', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (19, '重置密码', 'reset-password', 'POST /api/auth/user/reset-password', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (20, '用户详情', 'detail', 'GET /api/auth/user', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (21, '查看', 'view', '', '2022-03-19 09:43:59.000000', 4, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -119,17 +119,19 @@ CREATE TABLE `pages` (
   `name` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL COMMENT '前端路由',
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `page_type` int(11) NOT NULL DEFAULT '0' COMMENT '页面类型，0为手写页面，1为配置页面，2为配置后手写页面（模板生成代码）',
+  `content` json DEFAULT NULL COMMENT '配置页面的内容（json）',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of pages
 -- ----------------------------
 BEGIN;
-INSERT INTO `pages` VALUES (1, '页面管理', '/auth/page', CURRENT_TIMESTAMP);
-INSERT INTO `pages` VALUES (2, '角色管理', '/auth/role', CURRENT_TIMESTAMP);
-INSERT INTO `pages` VALUES (3, '用户管理', '/auth/admin', CURRENT_TIMESTAMP);
-INSERT INTO `pages` VALUES (4, '生成实体及接口', '/auth/generate-server-crud', CURRENT_TIMESTAMP);
+INSERT INTO `pages` (`id`, `name`, `path`, `created_at`, `page_type`, `content`) VALUES (1, '页面管理', '/auth/page', '2022-03-19 09:43:59.000000', 0, NULL);
+INSERT INTO `pages` (`id`, `name`, `path`, `created_at`, `page_type`, `content`) VALUES (2, '角色管理', '/auth/role', '2022-03-19 09:43:59.000000', 0, NULL);
+INSERT INTO `pages` (`id`, `name`, `path`, `created_at`, `page_type`, `content`) VALUES (3, '用户管理', '/auth/admin', '2022-03-19 09:43:59.000000', 0, NULL);
+INSERT INTO `pages` (`id`, `name`, `path`, `created_at`, `page_type`, `content`) VALUES (4, '生成实体及接口', '/auth/generate-server-crud', '2022-03-19 09:43:59.000000', 0, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -150,27 +152,27 @@ CREATE TABLE `role_operation` (
 -- Records of role_operation
 -- ----------------------------
 BEGIN;
-INSERT INTO `role_operation` VALUES (1, 1);
-INSERT INTO `role_operation` VALUES (1, 2);
-INSERT INTO `role_operation` VALUES (1, 3);
-INSERT INTO `role_operation` VALUES (1, 4);
-INSERT INTO `role_operation` VALUES (1, 5);
-INSERT INTO `role_operation` VALUES (1, 6);
-INSERT INTO `role_operation` VALUES (1, 7);
-INSERT INTO `role_operation` VALUES (1, 8);
-INSERT INTO `role_operation` VALUES (1, 9);
-INSERT INTO `role_operation` VALUES (1, 10);
-INSERT INTO `role_operation` VALUES (1, 11);
-INSERT INTO `role_operation` VALUES (1, 12);
-INSERT INTO `role_operation` VALUES (1, 13);
-INSERT INTO `role_operation` VALUES (1, 14);
-INSERT INTO `role_operation` VALUES (1, 15);
-INSERT INTO `role_operation` VALUES (1, 16);
-INSERT INTO `role_operation` VALUES (1, 17);
-INSERT INTO `role_operation` VALUES (1, 18);
-INSERT INTO `role_operation` VALUES (1, 19);
-INSERT INTO `role_operation` VALUES (1, 20);
-INSERT INTO `role_operation` VALUES (1, 21);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 1);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 2);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 3);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 4);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 5);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 6);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 7);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 8);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 9);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 10);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 11);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 12);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 13);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 14);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 15);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 16);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 17);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 18);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 19);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 20);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 21);
 COMMIT;
 
 -- ----------------------------
@@ -187,13 +189,31 @@ CREATE TABLE `roles` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `REL_6fbfce9b9d1efbb2b955b5234a` (`creator_uid`),
   CONSTRAINT `FK_6fbfce9b9d1efbb2b955b5234ab` FOREIGN KEY (`creator_uid`) REFERENCES `admins` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of roles
 -- ----------------------------
 BEGIN;
-INSERT INTO `roles` VALUES (1, '超级管理员', CURRENT_TIMESTAMP, NULL, 1, '');
+INSERT INTO `roles` (`id`, `name`, `created_at`, `creator_uid`, `role_type`, `description`) VALUES (1, '超级管理员', '2022-03-19 09:43:59.000000', NULL, 1, '');
+COMMIT;
+
+-- ----------------------------
+-- Table structure for test_entities
+-- ----------------------------
+DROP TABLE IF EXISTS `test_entities`;
+CREATE TABLE `test_entities` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `test1` varchar(255) NOT NULL COMMENT 'test',
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `deleted_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ----------------------------
+-- Records of test_entities
+-- ----------------------------
+BEGIN;
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

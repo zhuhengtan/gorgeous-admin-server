@@ -61,7 +61,7 @@ CREATE TABLE `admins` (
 -- Records of admins
 -- ----------------------------
 BEGIN;
-INSERT INTO `admins` (`id`, `name`, `password`, `email`, `admin_type`, `status`, `avatar`, `created_at`, `creator_uid`) VALUES (1, '系统管理员', '$argon2i$v=19$m=4096,t=3,p=1$8IL7j3KWRKF7kyct/iOp+Q$xtZlFWZFUHzLlubcl/Q8xtniZw49YNRJqVduZziPDAg', 'admin@gorgeous-admin.com', 1, 1, '', '2022-03-19 09:43:59.000000', NULL);
+INSERT INTO `admins` (`id`, `name`, `password`, `email`, `admin_type`, `status`, `avatar`, `created_at`, `creator_uid`) VALUES (1, '系统管理员', '$argon2i$v=19$m=4096,t=3,p=1$ND0QAk/Drvvnupc00cwhkA$G4ew1EmS6MsSlHEQrIGok1krbtDgWe3xomb5++WSD+c', 'admin@gorgeous-admin.com', 1, 1, '', '2022-03-19 09:43:59.000000', NULL);
 COMMIT;
 
 -- ----------------------------

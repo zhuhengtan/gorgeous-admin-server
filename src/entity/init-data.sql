@@ -198,22 +198,4 @@ BEGIN;
 INSERT INTO `roles` (`id`, `name`, `created_at`, `creator_uid`, `role_type`, `description`) VALUES (1, '超级管理员', '2022-03-19 09:43:59.000000', NULL, 1, '');
 COMMIT;
 
--- ----------------------------
--- Table structure for test_entities
--- ----------------------------
-DROP TABLE IF EXISTS `test_entities`;
-CREATE TABLE `test_entities` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `test1` varchar(255) NOT NULL COMMENT 'test',
-  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `deleted_at` datetime(6) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- ----------------------------
--- Records of test_entities
--- ----------------------------
-BEGIN;
-COMMIT;
-
 SET FOREIGN_KEY_CHECKS = 1;

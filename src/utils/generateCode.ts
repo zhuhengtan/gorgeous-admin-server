@@ -73,7 +73,7 @@ export const generateCURD = async ({
   // 生成routes
   const toBRoutesPath = `${projectRoot}/src/routes/toBRoutes.ts`
   const pluralRouteName = Inflector.dasherize(Inflector.tableize(entityName))
-  const routeName = Inflector.dasherize(entityName)
+  const routeName = Inflector.dasherize(Inflector.underscore(entityName))
   const routesStr = nunjucks.render(`${projectRoot}/src/routes/toBRoutesTemplate.njk`, { pluralRouteName, routeName, className })
   const importStr = `import ${className}Controller from '../controllers/toB/${entityName}'\n// TEMPLATE IMPORT TAG`
   shell.sed('-i', '// TEMPLATE IMPORT TAG', importStr, toBRoutesPath)

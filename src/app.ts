@@ -63,7 +63,7 @@ export class App {
       // jwt中间件
       this.app.use(jwt({ secret: JWT_SECRET }).unless({
         // 登录接口不需要验证
-        path: ['/api/auth/login']
+        path: ['/api/b/auth/login']
       }))
 
       // 将请求者用户信息放在ctx上下文中
@@ -74,8 +74,8 @@ export class App {
       // 鉴权
       this.app.use(auth().unless({
         path: [
-          '/api/auth/login',
-          '/api/auth/admin-auth',
+          '/api/b/auth/login',
+          '/api/b/auth/admin-auth',
         ]
       }))
 

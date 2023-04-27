@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 本地数据库
+ Source Server         : 本机数据库
  Source Server Type    : MySQL
- Source Server Version : 50729
+ Source Server Version : 50742 (5.7.42)
  Source Host           : localhost:3306
  Source Schema         : gorgeous_admin_server
 
  Target Server Type    : MySQL
- Target Server Version : 50729
+ Target Server Version : 50742 (5.7.42)
  File Encoding         : 65001
 
- Date: 19/03/2022 09:56:07
+ Date: 27/04/2023 22:19:49
 */
 
 SET NAMES utf8mb4;
@@ -53,7 +53,7 @@ CREATE TABLE `admins` (
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `creator_uid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `REL_a4b78db37a8fcafbe1431005ae` (`creator_uid`),
+  KEY `FK_a4b78db37a8fcafbe1431005ae1` (`creator_uid`),
   CONSTRAINT `FK_a4b78db37a8fcafbe1431005ae1` FOREIGN KEY (`creator_uid`) REFERENCES `admins` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
@@ -118,9 +118,9 @@ CREATE TABLE `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL COMMENT '前端路由',
-  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   `page_type` int(11) NOT NULL DEFAULT '0' COMMENT '页面类型，0为手写页面，1为配置页面，2为配置后手写页面（模板生成代码）',
   `content` json DEFAULT NULL COMMENT '配置页面的内容（json）',
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
@@ -128,10 +128,10 @@ CREATE TABLE `pages` (
 -- Records of pages
 -- ----------------------------
 BEGIN;
-INSERT INTO `pages` (`id`, `name`, `path`, `created_at`, `page_type`, `content`) VALUES (1, '页面管理', '/auth/page', '2022-03-19 09:43:59.000000', 0, NULL);
-INSERT INTO `pages` (`id`, `name`, `path`, `created_at`, `page_type`, `content`) VALUES (2, '角色管理', '/auth/role', '2022-03-19 09:43:59.000000', 0, NULL);
-INSERT INTO `pages` (`id`, `name`, `path`, `created_at`, `page_type`, `content`) VALUES (3, '用户管理', '/auth/admin', '2022-03-19 09:43:59.000000', 0, NULL);
-INSERT INTO `pages` (`id`, `name`, `path`, `created_at`, `page_type`, `content`) VALUES (4, '生成实体及接口', '/auth/generate-server-crud', '2022-03-19 09:43:59.000000', 0, NULL);
+INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (1, '页面管理', '/auth/page', 0, NULL, '2022-03-19 09:43:59.000000');
+INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (2, '角色管理', '/auth/role', 0, NULL, '2022-03-19 09:43:59.000000');
+INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (3, '用户管理', '/auth/admin', 0, NULL, '2022-03-19 09:43:59.000000');
+INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (4, '生成实体及接口', '/auth/generate-server-crud', 0, NULL, '2022-03-19 09:43:59.000000');
 COMMIT;
 
 -- ----------------------------
@@ -182,12 +182,12 @@ DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `creator_uid` int(11) DEFAULT NULL,
   `role_type` int(11) NOT NULL COMMENT '角色类型，1系统角色，2手动创建角色，仅手动创建角色可编辑删除',
   `description` varchar(255) NOT NULL DEFAULT '',
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `creator_uid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `REL_6fbfce9b9d1efbb2b955b5234a` (`creator_uid`),
+  KEY `FK_6fbfce9b9d1efbb2b955b5234ab` (`creator_uid`),
   CONSTRAINT `FK_6fbfce9b9d1efbb2b955b5234ab` FOREIGN KEY (`creator_uid`) REFERENCES `admins` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
@@ -195,7 +195,7 @@ CREATE TABLE `roles` (
 -- Records of roles
 -- ----------------------------
 BEGIN;
-INSERT INTO `roles` (`id`, `name`, `created_at`, `creator_uid`, `role_type`, `description`) VALUES (1, '超级管理员', '2022-03-19 09:43:59.000000', NULL, 1, '');
+INSERT INTO `roles` (`id`, `name`, `role_type`, `description`, `created_at`, `creator_uid`) VALUES (1, '超级管理员', 1, '', '2022-03-19 09:43:59.000000', NULL);
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;

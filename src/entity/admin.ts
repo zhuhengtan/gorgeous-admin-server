@@ -1,4 +1,15 @@
- import { Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, CreateDateColumn, OneToOne, JoinColumn } from 'typeorm'
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinTable,
+  CreateDateColumn,
+  OneToOne,
+  JoinColumn,
+  OneToMany,
+  ManyToOne,
+} from 'typeorm'
 import { Role } from './role'
 import moment from 'moment'
 
@@ -30,33 +41,45 @@ export class Admin {
   status: number
 
   @Column({
-    default: ''
+    default: '',
   })
   avatar: string
 
   @ManyToMany(() => Role)
   @JoinTable({
     name: 'admin_role',
-    joinColumns: [{
-      name: 'admin_id'
-    }],
-    inverseJoinColumns: [{
-      name: 'role_id'
-    }]
+    joinColumns: [
+      {
+        name: 'admin_id',
+      },
+    ],
+    inverseJoinColumns: [
+      {
+        name: 'role_id',
+      },
+    ],
   })
-  roles: Role[];
+  roles: Role[]
 
-  @OneToOne(() => Admin)
+  @ManyToOne(() => Admin, (admin) => admin.createdAdmins)
   @JoinColumn({
-    name: 'creator_uid'
+    name: 'creator_uid',
   })
   creator: Admin
+
+  @OneToMany(() => Role, (role) => role.creator)
+  @JoinColumn()
+  createdRoles: Role[]
+
+  @OneToMany(() => Admin, (admin) => admin.creator)
+  @JoinColumn()
+  createdAdmins: Admin[]
 
   @CreateDateColumn({
     name: 'created_at',
     transformer: {
       from: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss'),
-      to: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss')
+      to: (e: any) => moment(e).format('YYYY-MM-DD HH:mm:ss'),
     } as any,
   })
   createdAt: Date

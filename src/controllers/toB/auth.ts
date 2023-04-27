@@ -72,7 +72,6 @@ export default class AuthController {
 
   static async getPage(ctx: Context, next: Next) {
     const { id, path } = ctx.query
-    console.log(path)
     if (!id && !path) {
       ctx.fail('参数错误！')
       return await next()
@@ -490,8 +489,6 @@ export default class AuthController {
 
   static async changePwd(ctx: Context, next: Next) {
     const { email, code, newPassword } = ctx.request.body as any
-
-    console.log(email, code, newPassword)
 
     if (!code || !email || !newPassword) {
       ctx.fail('参数错误！')

@@ -12,6 +12,7 @@ import {
 } from 'typeorm'
 import { Role } from './role'
 import moment from 'moment'
+import { Operation } from './operation'
 
 @Entity('admins')
 export class Admin {
@@ -66,7 +67,7 @@ export class Admin {
     name: 'creator_uid',
   })
   creator: Admin
-
+  
   @OneToMany(() => Role, (role) => role.creator)
   @JoinColumn()
   createdRoles: Role[]
@@ -74,6 +75,10 @@ export class Admin {
   @OneToMany(() => Admin, (admin) => admin.creator)
   @JoinColumn()
   createdAdmins: Admin[]
+
+  @OneToMany(() => Operation, (operation) => operation.creator)
+  @JoinColumn()
+  createdOperations: Operation[]
 
   @CreateDateColumn({
     name: 'created_at',

@@ -11,7 +11,7 @@
  Target Server Version : 50742 (5.7.42)
  File Encoding         : 65001
 
- Date: 27/04/2023 22:19:49
+ Date: 12/05/2023 23:56:52
 */
 
 SET NAMES utf8mb4;
@@ -77,22 +77,22 @@ CREATE TABLE `operations` (
   `page_id` int(11) DEFAULT NULL,
   `creator_uid` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `REL_8617941d945caf965bfae43cc7` (`creator_uid`),
   KEY `FK_1fb259d97fa1be0bfe9affa0bea` (`page_id`),
+  KEY `FK_8617941d945caf965bfae43cc72` (`creator_uid`),
   CONSTRAINT `FK_1fb259d97fa1be0bfe9affa0bea` FOREIGN KEY (`page_id`) REFERENCES `pages` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_8617941d945caf965bfae43cc72` FOREIGN KEY (`creator_uid`) REFERENCES `admins` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of operations
 -- ----------------------------
 BEGIN;
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (1, '添加页面', 'add', 'POST /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (2, '查看页面列表', 'view', 'GET /api/b/auth/pages', '2022-03-19 09:43:59.000000', 1, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (3, '删除页面', 'delete', 'DELETE /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (4, '编辑页面', 'update', 'PUT /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (5, '获取所有接口列表', 'get-all-apis', 'GET /api/b/auth/all-apis', '2022-03-19 09:43:59.000000', 1, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (6, '页面详情', 'detail', 'GET /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (1, '添加页面', 'create', 'POST /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (2, '查看页面列表', 'view', 'GET /api/b/auth/pages', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (3, '删除页面', 'delete', 'DELETE /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (4, '编辑页面', 'update', 'PUT /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (5, '获取所有接口列表', 'get-all-apis', 'GET /api/b/auth/all-apis', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (6, '页面详情', 'detail', 'GET /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, 1);
 INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (7, '获取角色列表', 'view', 'GET /api/b/auth/roles', '2022-03-19 09:43:59.000000', 2, NULL);
 INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (8, '编辑角色', 'edit', 'PUT /api/b/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
 INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (9, '创建角色', 'create', 'POST /api/b/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
@@ -108,6 +108,8 @@ INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `pag
 INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (19, '重置密码', 'reset-password', 'POST /api/b/auth/admin/reset-password', '2022-03-19 09:43:59.000000', 3, NULL);
 INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (20, '用户详情', 'detail', 'GET /api/b/auth/admin', '2022-03-19 09:43:59.000000', 3, NULL);
 INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (21, '查看', 'view', '', '2022-03-19 09:43:59.000000', 4, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (22, '创建', 'create', '', '2023-05-12 15:55:21.000000', 5, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (23, '查看', 'view', '', '2023-05-12 15:55:21.000000', 5, 1);
 COMMIT;
 
 -- ----------------------------
@@ -122,16 +124,17 @@ CREATE TABLE `pages` (
   `content` json DEFAULT NULL COMMENT '配置页面的内容（json）',
   `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of pages
 -- ----------------------------
 BEGIN;
-INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (1, '页面管理', '/auth/page', 0, NULL, '2022-03-19 09:43:59.000000');
+INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (1, '页面管理', '/auth/page', 0, NULL, '2022-03-19 01:43:59.000000');
 INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (2, '角色管理', '/auth/role', 0, NULL, '2022-03-19 09:43:59.000000');
 INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (3, '用户管理', '/auth/admin', 0, NULL, '2022-03-19 09:43:59.000000');
 INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (4, '生成实体及接口', '/auth/generate-server-crud', 0, NULL, '2022-03-19 09:43:59.000000');
+INSERT INTO `pages` (`id`, `name`, `path`, `page_type`, `content`, `created_at`) VALUES (5, '活动管理', '/activity/management', 0, NULL, '2023-05-12 15:55:21.000000');
 COMMIT;
 
 -- ----------------------------

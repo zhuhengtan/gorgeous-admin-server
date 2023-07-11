@@ -198,4 +198,17 @@ BEGIN;
 INSERT INTO `roles` (`id`, `name`, `role_type`, `description`, `created_at`, `creator_uid`) VALUES (1, '超级管理员', 1, '', '2022-03-19 09:43:59.000000', NULL);
 COMMIT;
 
+-- ----------------------------
+-- Table structure for generated_entities
+-- ----------------------------
+DROP TABLE IF EXISTS `generated_entities`;
+CREATE TABLE `generated_entities` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entity_name` varchar(255) NOT NULL,
+  `keys` json NOT NULL COMMENT '字段',
+  `created_at` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `deleted_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+
 SET FOREIGN_KEY_CHECKS = 1;

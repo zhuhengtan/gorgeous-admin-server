@@ -8,20 +8,25 @@ import {
 } from 'typeorm'
 import moment from 'moment'
 
-@Entity('{{ tableName }}')
-export class {{ className }}
+@Entity('generated_entities')
+export class GeneratedEntity
 {
   @PrimaryGeneratedColumn()
   id : number 
-  {% for column in columns %}
+
   @Column({
-    {% if column.columnName %}name: '{{column.columnName}}',{% endif %}
-    {% if column.columnType %}type: '{{column.columnType}}',{% endif %}
-    {% if column.comment %}comment: '{{column.comment}}',{% endif %}
-    {% if column.default %}default: {{ column.default }}{% endif %}
+    name: 'entity_name',
+    type: 'varchar',
   })
-  {{column.name}} : {{column.type}}
-  {% endfor %}
+  entityName: string
+
+  @Column({
+    name: 'keys',
+    type: 'json',
+    comment: '字段',
+  })
+  keys: JSON
+  
   @CreateDateColumn({
     name: 'created_at',
     transformer: {

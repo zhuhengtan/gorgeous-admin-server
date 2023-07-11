@@ -4,14 +4,12 @@ import { {{className}} } from '../../entity/{{entityName}}'
 
 export default class {{className}}Controller {
   public static async create(ctx: Context, next: Next){
-    const { {{entityName}}, ...otherProps } = ctx.request.body as any
+    const props = ctx.request.body as any
 
     const {{entityName}}Repository = getManager().getRepository({{className}})
     const {{entityName}}Entity = new {{className}}()
-    for (const key of otherProps) {
-      if({{entityName}}Entity.hasOwnProperty(key) && otherProps.hasOwnProperty(key)) {
-        ({{entityName}}Entity as any)[key] = otherProps[key]
-      }
+    Object.keys(props).forEach((key) => {
+      ({{entityName}}Entity as {{className}})[key] = props[key]
     }
     await {{entityName}}Repository.save({{entityName}}Entity)
     
@@ -72,7 +70,7 @@ export default class {{className}}Controller {
 
   public static async delete(ctx: Context, next: Next){
     const { id } = ctx.request.body as any
-    if (!id || !id.length) {
+    if (!id && !id.length) {
       ctx.fail('参数错误！')
       return await next()
     }

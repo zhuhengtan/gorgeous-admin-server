@@ -15,6 +15,7 @@ import { sendMail } from '../../utils/sendEmail'
 import { isEmail } from '../../utils/check'
 import { redisSet, redisGet } from '../../utils/redis'
 import { generateCURD, Field, Column } from '../../utils/generateCode'
+import { GeneratedEntity } from '../../entity/generatedEntity'
 
 export default class AuthController {
   static async login(ctx: Context, next: Next) {
@@ -112,11 +113,36 @@ export default class AuthController {
 
     if(pageType === 0) {
       if(!operations) {
-        ctx.fail('参数错误！')
+        ctx.fail('operations必填！')
         return await next()
       }
-    }else{ // pageType 1 2
-      
+    } else { // pageType 1 生成的页面
+      if(!entityName) {
+        ctx.fail('entityName必填！')
+        return await next()
+      }
+      operations = [
+        {
+          name: '查看',
+          key: 'view',
+          relatedApi: 'GET /api/b/animal-types',
+        },
+        {
+          name: '新增',
+          key: 'create',
+          relatedApi: 'POST /api/b/animal-type',
+        },
+        {
+          name: '修改',
+          key: 'update',
+          relatedApi: 'PUT /api/b/animal-type',
+        },
+        {
+          name: '删除',
+          key: 'delete',
+          relatedApi: 'DELETE /api/b/animal-type',
+        },
+      ]
     }
     
     const operationEntities = operations.map((item: any) => {
@@ -575,18 +601,20 @@ export default class AuthController {
       return await next()
     }
 
-    const auth = await adminRepository.query(`select o.name as operationName, o.key as operationKey, p.path as pagePath from (SELECT * from role_operation where role_id in (select role_id from admin_role where admin_id = ${id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id LEFT JOIN pages as p on p.id = o.page_id ORDER BY pagePath`)
-    let res: { [key: string]: Array<{ operationKey: string, operationName: string }> } = {}
-    auth.forEach((item: { operationKey: string, operationName: string, pagePath: string }) => {
+    const auth = await adminRepository.query(`select o.name as operationName, o.key as operationKey, o.related_api as relatedApi,p.path as pagePath from (SELECT * from role_operation where role_id in (select role_id from admin_role where admin_id = ${id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id LEFT JOIN pages as p on p.id = o.page_id ORDER BY pagePath`)
+    let res: { [key: string]: Array<{ operationKey: string, operationName: string, relatedApi: string }> } = {}
+    auth.forEach((item: { operationKey: string, operationName: string, relatedApi: string, pagePath: string }) => {
       if (!res[item.pagePath]) {
         res[item.pagePath] = [{
           operationKey: item.operationKey,
           operationName: item.operationName,
+          relatedApi: item.relatedApi,
         }]
       } else {
         res[item.pagePath].push({
           operationKey: item.operationKey,
           operationName: item.operationName,
+          relatedApi: item.relatedApi,
         })
       }
     })
@@ -607,6 +635,13 @@ export default class AuthController {
       ctx.fail('参数错误！')
       return await next()
     }
+    
+    const generatedEntityRepository = getManager().getRepository(GeneratedEntity)
+    const entity = new GeneratedEntity()
+    entity.entityName = entityName
+    entity.keys = fields
+    generatedEntityRepository.save(entity)
+
     const res = await generateCURD({
       entityName,
       columns: fields && fields.length && fields.map((field: Field) => {
@@ -645,6 +680,21 @@ export default class AuthController {
       return await next()
     }
     ctx.success('生成成功！请前往后端查看代码！')
+    return await next()
+  }
+
+  static async getGeneratedEntityDetail(ctx: Context, next: Next) {
+    const {
+      entityName,
+    } = ctx.query
+
+    const generatedEntityRepository = getManager().getRepository(GeneratedEntity)
+    const entity = await generatedEntityRepository.findOne({
+      where: {
+        entityName
+      }
+    })
+    ctx.success('获取成功！', entity)
     return await next()
   }
 }

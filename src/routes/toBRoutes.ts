@@ -40,6 +40,7 @@ toBRouter.post('/auth/update-avatar', AuthController.updateAvatar)
 toBRouter.get('/auth/admin-auth', AuthController.getAdminAuth)
 
 toBRouter.post('/auth/generate-server-crud', AuthController.generateServerCRUD)
+toBRouter.get('/auth/generated-entity', AuthController.getGeneratedEntityDetail)
 
 // TEMPLATE ROUTES TAG
 

@@ -1,6 +1,7 @@
 /**
  * 生产环境配置文件
  */
+const path = require('path');
 export const config = {
   systemInfo: {
     name: 'gorgeous admin',
@@ -19,10 +20,10 @@ export const config = {
     database: "",
     synchronize: true,
     entities: [
-      "dist/src/entity/*/*.js"
+      path.join(__dirname, "../../dist/src/entity/*/*.js"),
     ],
     cli: {
-      entitiesDir: "dist/src/entity"
+      entitiesDir: path.join(__dirname, "../../dist/src/entity"),
     },
     timezone: "+8"
   },

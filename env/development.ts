@@ -1,7 +1,8 @@
 /**
  * 开发环境配置文件
  */
- export const config = {
+const path = require('path');
+export const config = {
   systemInfo: {
     name: 'gorgeous admin',
     loginUrl: 'http://localhost:3000/login',
@@ -19,10 +20,10 @@
     database: "gorgeous_admin_server",
     synchronize: true,
     entities: [
-      "src/entity/*/*.ts"
+      path.join(__dirname, '../src/entity/*.{ts,js}'),
     ],
     cli: {
-      entitiesDir: "src/entity"
+      entitiesDir: path.join(__dirname, "../src/entity"),
     },
     timezone: "+8"
   },

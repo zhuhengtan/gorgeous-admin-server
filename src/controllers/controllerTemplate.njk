@@ -9,8 +9,8 @@ export default class {{className}}Controller {
     const {{entityName}}Repository = getManager().getRepository({{className}})
     const {{entityName}}Entity = new {{className}}()
     Object.keys(props).forEach((key) => {
-      ({{entityName}}Entity as {{className}})[key] = props[key]
-    }
+      ({{entityName}}Entity as {{className}})[key as keyof {{className}}] = props[key] as never
+    })
     await {{entityName}}Repository.save({{entityName}}Entity)
     
     ctx.success('创建成功！')

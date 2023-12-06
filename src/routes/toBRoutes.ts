@@ -9,7 +9,7 @@ import CommonController from '../controllers/common'
 const toBRouter = new Router()
 toBRouter.prefix('/api/b')
 
-toBRouter.post('/api/common/upload', upload.single('file'), CommonController.upload)
+toBRouter.post('/common/upload', upload.single('file'), CommonController.upload)
 
 toBRouter.post('/auth/login', AuthController.login)
 toBRouter.get('/auth/pages', AuthController.getPages)

@@ -4,7 +4,6 @@ import { getManager } from 'typeorm'
 import jwt from 'jsonwebtoken'
 import { toBRouter } from '../../routes/toBRoutes'
 
-import { JWT_SECRET } from '../../utils/constants'
 import envConfig from '../../../env/index'
 import { Admin } from '../../entity/admin'
 import { Page } from '../../entity/page'
@@ -47,7 +46,7 @@ export default class AuthController {
           avatar: admin.avatar,
           createdAt: admin.createdAt,
         },
-        token: jwt.sign({ id: admin.id }, JWT_SECRET)
+        token: jwt.sign({ id: admin.id }, envConfig.jwtSecret)
       })
       return await next()
     } else {

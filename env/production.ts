@@ -44,6 +44,19 @@ export const config = {
     prefix: 'gorgeous-admin-server-code:', //存诸前缀
     ttl: 60 * 5,  //过期时间
   },
+  tencent: {
+    secretId: '',
+    secretKey: '',
+    cosv5: {
+      bucket: '',
+      region: '',
+      prefix: '', // path where you put your resource
+    },
+    sms: {
+      region: '',
+      endpoint: '',
+    },
+  },
   staticPath: '', // 静态资源放在服务器上的位置
   staticPrefix: '', // 拼接的静态资源url前缀
 };

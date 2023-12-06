@@ -43,6 +43,7 @@
     "@koa/cors": "^3.1.0",
     "@koa/router": "^10.0.0",
     "argon2": "^0.27.2",
+    "cos-nodejs-sdk-v5": "^2.12.1",
     "ioredis": "^4.28.5",
     "jsonwebtoken": "^8.5.1",
     "koa": "^2.13.1",

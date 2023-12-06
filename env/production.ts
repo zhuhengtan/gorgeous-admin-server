@@ -9,6 +9,7 @@ export const config = {
   },
   signKey: 'gorgeous-admin-server',
   env: 'production', //环境名称
+  jwtSecret: 'gorgeous-admin', // 可以生成一个uuid
   agreement: "http",
   port: "3000",
   database: {

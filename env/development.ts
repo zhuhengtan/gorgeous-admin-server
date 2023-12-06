@@ -9,6 +9,7 @@ export const config = {
   },
   signKey: 'gorgeous-admin-server',
   env: 'development', //环境名称
+  jwtSecret: 'gorgeous-admin',
   agreement: "http",
   port: "4000",
   database: {// 数据库相关

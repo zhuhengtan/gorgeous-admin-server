@@ -59,11 +59,9 @@ export default class {{className}}Controller {
       ctx.fail('未找到该条记录！')
       return await next()
     }
-    for (const key of otherProps) {
-      if({{entityName}}Entity.hasOwnProperty(key) && otherProps.hasOwnProperty(key)) {
-        ({{entityName}}Entity as any)[key] = otherProps[key]
-      }
-    }
+    Object.keys(otherProps).forEach((key) => {
+      ({{entityName}}Entity as {{className}})[key as keyof {{className}}] = otherProps[key] as never
+    })
     ctx.success('更新成功！')
     return await next()
   }

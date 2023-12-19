@@ -108,7 +108,7 @@ INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `pag
 INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (19, '重置密码', 'reset-password', 'POST /api/b/auth/admin/reset-password', '2022-03-19 09:43:59.000000', 3, NULL);
 INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (20, '用户详情', 'detail', 'GET /api/b/auth/admin', '2022-03-19 09:43:59.000000', 3, NULL);
 INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (21, '查看', 'view', '', '2022-03-19 09:43:59.000000', 4, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (22, '生成实体', 'create', '', '2022-03-19 09:43:59.000000', 4, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (22, '生成实体', 'create', '/POST /api/b/auth/generate-server-crud', '2022-03-19 09:43:59.000000', 4, NULL);
 COMMIT;
 
 -- ----------------------------

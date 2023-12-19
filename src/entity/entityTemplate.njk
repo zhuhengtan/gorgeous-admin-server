@@ -25,17 +25,29 @@ export class {{ className }}
   @CreateDateColumn({
     name: 'created_at',
     transformer: {
-      from: (e : any) => moment(e).format('YYYY-MM-DD HH:mm:ss'),
-      to: (e : any) => moment(e).format('YYYY-MM-DD HH:mm:ss')
+      from: (e: any) => {
+        if(e) {
+          return moment(e).format('YYYY-MM-DD HH:mm:ss')
+        }
+      },
+      to: (e: any) => {
+        if(e) {
+          return moment(e).format('YYYY-MM-DD HH:mm:ss')
+        }
+      }
     } as any
   })
-  createdAt : Date
+  createdAt: Date
 
   @DeleteDateColumn({
     name: 'deleted_at',
     transformer: {
-      from: (e : any) => moment(e).format('YYYY-MM-DD HH:mm:ss'),
-      to: (e : any) => {
+      from: (e: any) => {
+        if(e) {
+          return moment(e).format('YYYY-MM-DD HH:mm:ss')
+        }
+      },
+      to: (e: any) => {
         if(e) {
           return moment(e).format('YYYY-MM-DD HH:mm:ss')
         }

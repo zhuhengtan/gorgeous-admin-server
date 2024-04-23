@@ -1,5 +1,5 @@
 import { Context, Next } from 'koa'
-import { verify, hash } from 'argon2'
+import { verify, hash } from '../../utils/pwd'
 import { getManager } from 'typeorm'
 import jwt from 'jsonwebtoken'
 import { toBRouter } from '../../routes/toBRoutes'

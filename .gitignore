@@ -112,3 +112,5 @@ temp/
 
 .vscode
 env/development.ts.bak
+
+.DS_Store

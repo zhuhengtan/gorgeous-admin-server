@@ -1,14 +1,14 @@
 {
-  "name": "adopt-pet-server",
+  "name": "gorgeous-admin-server",
   "version": "1.0.0",
   "description": "backend for adopt-pet",
   "main": "index.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json",
     "compile": "tsc",
-    "prd": "npm run compile && pm2 start ./bin/www.js --name adopt-pet-server",
-    "restart": "npm run compile && pm2 restart adopt-pet-server",
-    "stop": "pm2 stop adopt-pet-server"
+    "prd": "npm run compile && pm2 start ./bin/www.js --name gorgeous-admin-server",
+    "restart": "npm run compile && pm2 restart gorgeous-admin-server",
+    "stop": "pm2 stop gorgeous-admin-server"
   },
   "keywords": [
     "koa2",

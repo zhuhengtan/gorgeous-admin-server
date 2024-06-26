@@ -120,26 +120,35 @@ export default class AuthController {
         ctx.fail('entityName必填！')
         return await next()
       }
+      let routeName = entityName
+      let pluralRouteName  = entityName
+
+      try {
+        routeName = Inflector.dasherize(Inflector.underscore(entityName))
+        pluralRouteName = Inflector.dasherize(Inflector.tableize(entityName))
+      } catch (error) {
+        console.log(error)
+      }
       operations = [
         {
           name: '查看',
           key: 'view',
-          relatedApi: 'GET /api/b/animal-types',
+          relatedApi: `GET /api/b/${pluralRouteName}`,
         },
         {
           name: '新增',
           key: 'create',
-          relatedApi: 'POST /api/b/animal-type',
+          relatedApi: `POST /api/b/${routeName}`,
         },
         {
           name: '修改',
           key: 'update',
-          relatedApi: 'PUT /api/b/animal-type',
+          relatedApi: `PUT /api/b/${routeName}`,
         },
         {
           name: '删除',
           key: 'delete',
-          relatedApi: 'DELETE /api/b/animal-type',
+          relatedApi: `DELETE /api/b/${routeName}`,
         },
       ]
     }

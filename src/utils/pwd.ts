@@ -8,5 +8,5 @@ export const hash = (pwd: string): string => {
 
 export const verify = (pwdLocal: string, pwdToCheck: string): boolean => {
   const t = pwdLocal.split('$')
-  return t[1] === md5(t[1] + pwdToCheck)
+  return t[1] === md5(t[0] + pwdToCheck)
 }

@@ -2,6 +2,10 @@
 
 使用`Koa`、`MySQL`、`TypeORM`
 
+## 使用环境：
+
+node v14
+
 ## 包含功能：
 ✅ 登录 JWT 鉴权
 

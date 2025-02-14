@@ -15,6 +15,7 @@ import { isEmail } from '../../utils/check'
 import { redisSet, redisGet } from '../../utils/redis'
 import { generateCURD, Field, Column } from '../../utils/generateCode'
 import { GeneratedEntity } from '../../entity/generatedEntity'
+import {dasherize, underscore, tableize} from 'inflected'
 
 export default class AuthController {
   static async login(ctx: Context, next: Next) {
@@ -124,8 +125,8 @@ export default class AuthController {
       let pluralRouteName  = entityName
 
       try {
-        routeName = Inflector.dasherize(Inflector.underscore(entityName))
-        pluralRouteName = Inflector.dasherize(Inflector.tableize(entityName))
+        routeName = dasherize(underscore(entityName))
+        pluralRouteName = dasherize(tableize(entityName))
       } catch (error) {
         console.log(error)
       }

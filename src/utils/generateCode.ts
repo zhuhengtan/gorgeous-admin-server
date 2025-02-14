@@ -2,7 +2,8 @@ import shell from 'shelljs'
 import fs from 'fs'
 import { ColumnType } from 'typeorm'
 import { Context, Next } from 'koa'
-
+import { dasherize, tableize, underscore } from 'inflected'
+import nunjucks from 'nunjucks'
 export interface Column {
   name: string
   type: string
@@ -34,15 +35,13 @@ export const generateCURD = async ({
   entityName,
   columns,
 }: Props, ctx: Context, next: Next) => {
-  const Inflector = require('inflected')
-  const nunjucks = require('nunjucks')
   nunjucks.configure({
     autoescape: false,
   })
 
   // 生成entity
   const className = entityName[0].toUpperCase() + entityName.substring(1) // 类名
-  const tableName = Inflector.tableize(entityName) // 表名
+  const tableName = tableize(entityName) // 表名
 
   const projectRoot = process.cwd()
 
@@ -72,8 +71,8 @@ export const generateCURD = async ({
 
   // 生成routes
   const toBRoutesPath = `${projectRoot}/src/routes/toBRoutes.ts`
-  const pluralRouteName = Inflector.dasherize(Inflector.tableize(entityName))
-  const routeName = Inflector.dasherize(Inflector.underscore(entityName))
+  const pluralRouteName = dasherize(tableize(entityName))
+  const routeName = dasherize(underscore(entityName))
   const routesStr = nunjucks.render(`${projectRoot}/src/routes/toBRoutesTemplate.njk`, { pluralRouteName, routeName, className })
   const importStr = `import ${className}Controller from '../controllers/toB/${entityName}'\n// TEMPLATE IMPORT TAG`
   shell.sed('-i', '// TEMPLATE IMPORT TAG', importStr, toBRoutesPath)

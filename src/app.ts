@@ -45,9 +45,12 @@ export class App {
         max: 100,  // duration时间内的最大请求量
         message: "请求过于频繁，请稍后再试。",  // 超出限制时的返回消息
         store: new Stores.Redis({// 使用redis存储
-          host: envConfig.redis.host,
-          port: envConfig.redis.port,
-          db: envConfig.redis.db,
+          socket: {
+            host: envConfig.redis.host,
+            port: envConfig.redis.port,
+          },
+          password: envConfig.redis.password,
+          database: envConfig.redis.db,
         }),
       }))
       this.app.use(logger())
@@ -80,13 +83,14 @@ export class App {
       // 自定义jwt验证失败返回信息
       this.app.use(function(ctx, next){
         return next().catch((err) => {
-          console.log(err)
+          console.log(111, err)
           if (401 == err.status) {
             err.status = 200
             ctx.fail('登录失效或未登录！', 401)
           } else if(err.message === 'jwt must be provided') {
             ctx.fail('接口header必须传入Authorization字段！', 401)
           } else {
+            console.log(222, err)
             throw err;
           }
         });

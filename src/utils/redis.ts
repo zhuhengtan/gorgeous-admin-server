@@ -3,11 +3,11 @@ import envConfig from '../../env'
 
 export const redis = new Redis(envConfig.redis)
 
-export const redisSet = async (key: string, value: any, expiryMode: string | any[] = 'EX', expiration: number = envConfig.redis.ttl)=> {
+export const redisSet = async (key: string, value: any, expiration: number = envConfig.redis.ttl)=> {
   if(typeof value === 'object') {
-    await redis.set(`${envConfig.redis.prefix}${key}`, JSON.stringify(value), expiryMode, expiration)
+    await redis.set(`${envConfig.redis.prefix}${key}`, JSON.stringify(value), "EX", expiration)
   }else{
-    await redis.set(`${envConfig.redis.prefix}${key}`, value, expiryMode, expiration)
+    await redis.set(`${envConfig.redis.prefix}${key}`, value, "EX", expiration)
   }
 }
 export const redisGet = async (key: string)=>{

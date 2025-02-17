@@ -10,6 +10,8 @@ import TestEntityController from '../controllers/toB/testEntity'
 const toBRouter = new Router()
 toBRouter.prefix('/api/b')
 
+toBRouter.get('/common/entity-options', CommonController.getEntityOptions)
+toBRouter.get('/common/generated-entity', AuthController.getGeneratedEntityDetail)
 toBRouter.post('/common/upload', upload.single('file'), CommonController.upload)
 
 toBRouter.post('/auth/login', AuthController.login)

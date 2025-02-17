@@ -6,6 +6,7 @@ import {
   JoinColumn,
   CreateDateColumn,
   OneToMany,
+  ManyToOne,
 } from 'typeorm'
 import moment from 'moment'
 import { Operation } from './operation'
@@ -17,6 +18,15 @@ export class Page {
 
   @Column()
   name: string
+
+  @ManyToOne(()=>Page)
+  @JoinColumn({
+    name: 'parent_page_id',
+  })
+  parentPage: Page | null
+
+  @OneToMany(()=>Page, page=>page.parentPage)
+  children: Page[]
 
   @Column({
     comment: '前端路由',
@@ -31,6 +41,13 @@ export class Page {
   pageType: number
 
   @Column({
+    comment: '页面实体',
+    name: 'entity_name',
+    default: '',
+  })
+  entityName: string
+
+  @Column({
     comment: '配置页面的内容（json）',
     type: 'json',
     default: null,
@@ -38,7 +55,6 @@ export class Page {
   content: string
 
   @OneToMany(() => Operation, (operation) => operation.page)
-  @JoinColumn()
   operations: Operation[]
 
   @CreateDateColumn({

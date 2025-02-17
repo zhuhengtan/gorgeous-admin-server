@@ -117,7 +117,7 @@ export class App {
         path: [
           '/api/b/auth/login',
           '/api/b/auth/admin-auth',
-          '/api/b/common/upload',
+          /^\/api\/b\/common/,
           /^\/api\/c/,
         ]
       }))

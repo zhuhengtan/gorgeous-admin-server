@@ -755,7 +755,11 @@ export default class AuthController {
         entityName
       }
     })
-    ctx.success('获取成功！', entity)
+    if(entity) {
+      ctx.success('获取成功！', entity)
+    } else {
+      ctx.fail('获取失败！')
+    }
     return await next()
   }
 }

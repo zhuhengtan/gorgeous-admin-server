@@ -87,28 +87,29 @@ CREATE TABLE `operations` (
 -- Records of operations
 -- ----------------------------
 BEGIN;
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (1, '添加页面', 'create', 'POST /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, 1);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (2, '查看页面列表', 'view', 'GET /api/b/auth/pages', '2022-03-19 09:43:59.000000', 1, 1);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (3, '删除页面', 'delete', 'DELETE /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, 1);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (4, '编辑页面', 'update', 'PUT /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, 1);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (5, '获取所有接口列表', 'get-all-apis', 'GET /api/b/auth/all-apis', '2022-03-19 09:43:59.000000', 1, 1);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (6, '页面详情', 'detail', 'GET /api/b/auth/page', '2022-03-19 09:43:59.000000', 1, 1);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (7, '获取角色列表', 'view', 'GET /api/b/auth/roles', '2022-03-19 09:43:59.000000', 2, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (8, '编辑角色', 'edit', 'PUT /api/b/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (9, '创建角色', 'create', 'POST /api/b/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (10, '删除角色', 'delete', 'DELETE /api/b/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (11, '获取所有操作列表', 'get-all-operations', 'GET /api/b/auth/all-operations', '2022-03-19 09:43:59.000000', 2, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (12, '删除操作', 'delete-operation', 'DELETE /api/b/auth/operation', '2022-03-19 09:43:59.000000', 2, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (13, '角色详情', 'detail', 'GET /api/b/auth/role', '2022-03-19 09:43:59.000000', 2, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (14, '删除用户', 'delete', 'DELETE /api/b/auth/admin', '2022-03-19 09:43:59.000000', 3, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (15, '编辑用户', 'update', 'PUT /api/b/auth/admin', '2022-03-19 09:43:59.000000', 3, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (16, '新增用户', 'create', 'POST /api/b/auth/admin', '2022-03-19 09:43:59.000000', 3, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (17, '用户列表', 'view', 'GET /api/b/auth/admins', '2022-03-19 09:43:59.000000', 3, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (18, '全部角色', 'all-roles', 'GET /api/b/auth/all-roles', '2022-03-19 09:43:59.000000', 3, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (19, '重置密码', 'reset-password', 'POST /api/b/auth/admin/reset-password', '2022-03-19 09:43:59.000000', 3, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (20, '用户详情', 'detail', 'GET /api/b/auth/admin', '2022-03-19 09:43:59.000000', 3, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (21, '查看', 'view', '', '2022-03-19 09:43:59.000000', 4, NULL);
-INSERT INTO `operations` (`id`, `name`, `key`, `related_api`, `created_at`, `page_id`, `creator_uid`) VALUES (22, '生成实体', 'create', '/POST /api/b/auth/generate-server-crud', '2022-03-19 09:43:59.000000', 4, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (1, '添加页面', 'create', '["POST /api/b/auth/page"]', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (2, '查看页面列表', 'view', '["GET /api/b/auth/pages"]', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (3, '删除页面', 'delete', '["DELETE /api/b/auth/page"]', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (4, '编辑页面', 'update', '["PUT /api/b/auth/page"]', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (5, '获取所有接口列表', 'get-all-apis', '["GET /api/b/auth/all-apis"]', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (6, '页面详情', 'detail', '["GET /api/b/auth/page"]', '2022-03-19 09:43:59.000000', 1, 1);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (7, '获取角色列表', 'view', '["GET /api/b/auth/roles"]', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (8, '编辑角色', 'edit', '["PUT /api/b/auth/role"]', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (9, '创建角色', 'create', '["POST /api/b/auth/role"]', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (10, '删除角色', 'delete', '["DELETE /api/b/auth/role"]', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (11, '获取所有操作列表', 'get-all-operations', '["GET /api/b/auth/all-operations"]', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (12, '删除操作', 'delete-operation', '["DELETE /api/b/auth/operation"]', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (13, '角色详情', 'detail', '["GET /api/b/auth/role"]', '2022-03-19 09:43:59.000000', 2, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (14, '删除用户', 'delete', '["DELETE /api/b/auth/admin"]', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (15, '编辑用户', 'update', '["PUT /api/b/auth/admin"]', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (16, '新增用户', 'create', '["POST /api/b/auth/admin"]', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (17, '用户列表', 'view', '["GET /api/b/auth/admins"]', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (18, '全部角色', 'all-roles', '["GET /api/b/auth/all-roles"]', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (19, '重置密码', 'reset-password', '["POST /api/b/auth/admin/reset-password"]', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (20, '用户详情', 'detail', '["GET /api/b/auth/admin"]', '2022-03-19 09:43:59.000000', 3, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (21, '查看', 'view', '["GET /api/b/auth/generated-entities"]', '2022-03-19 09:43:59.000000', 4, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (22, '生成实体', 'create', '["POST /api/b/auth/generate-server-crud"]', '2022-03-19 09:43:59.000000', 4, NULL);
+INSERT INTO `operations` (`id`, `name`, `key`, `related_apis`, `created_at`, `page_id`, `creator_uid`) VALUES (23, '更新实体', 'update', '["PUT /api/b/auth/generated-entity"]', '2022-03-19 09:43:59.000000', 4, NULL);
 COMMIT;
 
 -- ----------------------------
@@ -175,6 +176,7 @@ INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 19);
 INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 20);
 INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 21);
 INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 22);
+INSERT INTO `role_operation` (`role_id`, `operation_id`) VALUES (1, 23);
 COMMIT;
 
 -- ----------------------------

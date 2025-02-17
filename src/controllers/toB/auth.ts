@@ -134,22 +134,27 @@ export default class AuthController {
         {
           name: '查看',
           key: 'view',
-          relatedApi: `GET /api/b/${pluralRouteName}`,
+          relatedApis: [`GET /api/b/${pluralRouteName}`],
         },
         {
           name: '新增',
           key: 'create',
-          relatedApi: `POST /api/b/${routeName}`,
+          relatedApis: [`POST /api/b/${routeName}`],
         },
         {
           name: '修改',
           key: 'update',
-          relatedApi: `PUT /api/b/${routeName}`,
+          relatedApis: [`PUT /api/b/${routeName}`],
         },
         {
           name: '删除',
           key: 'delete',
-          relatedApi: `DELETE /api/b/${routeName}`,
+          relatedApis: [`DELETE /api/b/${routeName}`],
+        },
+        {
+          name: '编辑实体',
+          key: 'edit-entity',
+          relatedApis: [`PUT /api/b/auth/generated-entity`],
         },
       ]
     }
@@ -158,7 +163,7 @@ export default class AuthController {
       const tmp = new Operation()
       tmp.name = item.name
       tmp.key = item.key
-      tmp.relatedApi = item.relatedApi
+      tmp.relatedApis = item.relatedApis
       tmp.creator = ctx.requestAdmin
       return tmp
     })
@@ -205,7 +210,7 @@ export default class AuthController {
       operationEntity.key = operation.key
       operationEntity.page = page
       operationEntity.creator = ctx.requestAdmin
-      operationEntity.relatedApi = operation.relatedApi
+      operationEntity.relatedApis = operation.relatedApis
       return operationEntity
     })
     await operationRepository.save(tmp)
@@ -596,10 +601,9 @@ export default class AuthController {
   }
 
   static async getAdminAuth(ctx: Context, next: Next) {
-    const { id } = ctx.query
+    let { id } = ctx.query
     if (!id) {
-      ctx.fail('参数错误！')
-      return await next()
+      id = ctx.requestAdmin.id
     }
     const adminRepository = getManager().getRepository(Admin)
     const admin = await adminRepository.findOne(id as string, {
@@ -609,21 +613,29 @@ export default class AuthController {
       ctx.fail('未找到该用户！')
       return await next()
     }
-
-    const auth = await adminRepository.query(`select o.name as operationName, o.key as operationKey, o.related_api as relatedApi,p.path as pagePath from (SELECT * from role_operation where role_id in (select role_id from admin_role where admin_id = ${id})) as tmp LEFT JOIN operations as o on o.id = tmp.operation_id LEFT JOIN pages as p on p.id = o.page_id ORDER BY pagePath`)
-    let res: { [key: string]: Array<{ operationKey: string, operationName: string, relatedApi: string }> } = {}
-    auth.forEach((item: { operationKey: string, operationName: string, relatedApi: string, pagePath: string }) => {
-      if (!res[item.pagePath]) {
-        res[item.pagePath] = [{
-          operationKey: item.operationKey,
-          operationName: item.operationName,
-          relatedApi: item.relatedApi,
+    const auth = await adminRepository.query(
+      `SELECT o.*, p.id AS page_id, p.name AS page_name, p.path AS page_path
+        FROM operations o
+        JOIN role_operation ro ON o.id = ro.operation_id
+        JOIN roles r ON ro.role_id = r.id
+        JOIN admin_role ar ON r.id = ar.role_id
+        JOIN pages p ON o.page_id = p.id
+        WHERE ar.admin_id = ?`,
+      [id]
+  )
+    let res: { [key: string]: Array<{ operationKey: string, operationName: string, relatedApis: string }> } = {}
+    auth.forEach((item: { key: string, name: string, related_apis: string, page_path: string }) => {
+      if (!res[item.page_path]) {
+        res[item.page_path] = [{
+          operationKey: item.key,
+          operationName: item.name,
+          relatedApis: JSON.parse(item.related_apis),
         }]
       } else {
-        res[item.pagePath].push({
-          operationKey: item.operationKey,
-          operationName: item.operationName,
-          relatedApi: item.relatedApi,
+        res[item.page_path].push({
+          operationKey: item.key,
+          operationName: item.name,
+          relatedApis: JSON.parse(item.related_apis),
         })
       }
     })
@@ -648,7 +660,7 @@ export default class AuthController {
     const generatedEntityRepository = getManager().getRepository(GeneratedEntity)
     const entity = new GeneratedEntity()
     entity.entityName = entityName
-    entity.keys = fields
+    entity.fields = fields
     generatedEntityRepository.save(entity)
 
     const res = await generateCURD({
@@ -690,6 +702,46 @@ export default class AuthController {
     }
     ctx.success('生成成功！请前往后端查看代码！')
     return await next()
+  }
+
+  static async getGeneratedEntityList(ctx: Context, next: Next) {
+    const { current = 1, pageSize = 10 } = ctx.query
+    const generatedEntityRepository = getManager().getRepository(GeneratedEntity)
+    const list = await generatedEntityRepository.find({
+      skip: (parseInt(current as string, 10) - 1) * parseInt(pageSize as string, 10),
+      take: parseInt(pageSize as string, 10),
+      order: {
+        createdAt: 'DESC',
+      },
+    })
+    const total = await generatedEntityRepository.count()
+    ctx.success('获取成功！', { list, total })
+    return await next()
+  }
+
+  static async updateGeneratedEntity(ctx: Context, next: Next) {
+    const { id, entityName, fields } = ctx.request.body as {
+      id: number
+      entityName: string
+      fields: JSON
+    }
+
+    const generatedEntityRepository = getManager().getRepository(GeneratedEntity)
+    const entity = await generatedEntityRepository.findOne(id)
+    if (!entity) {
+      ctx.fail('未找到该实体！')
+      return await next()
+    }
+    entity.entityName = entityName
+    entity.fields = fields
+    const res = await generatedEntityRepository.save(entity)
+    if (res) {
+      ctx.success('更新成功！')
+      return await next()
+    } else {
+      ctx.fail('更新失败！')
+      return await next()
+    }
   }
 
   static async getGeneratedEntityDetail(ctx: Context, next: Next) {

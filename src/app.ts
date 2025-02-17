@@ -83,14 +83,12 @@ export class App {
       // 自定义jwt验证失败返回信息
       this.app.use(function(ctx, next){
         return next().catch((err) => {
-          console.log(111, err)
           if (401 == err.status) {
             err.status = 200
             ctx.fail('登录失效或未登录！', 401)
           } else if(err.message === 'jwt must be provided') {
             ctx.fail('接口header必须传入Authorization字段！', 401)
           } else {
-            console.log(222, err)
             throw err;
           }
         });

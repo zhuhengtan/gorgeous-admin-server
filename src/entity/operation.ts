@@ -21,9 +21,10 @@ export class Operation {
   page: Page
 
   @Column({
-    name: 'related_api'
+    name: 'related_apis',
+    type: 'json'
   })
-  relatedApi: string
+  relatedApis: string[]
   
   @ManyToOne(() => Admin)
   @JoinColumn({

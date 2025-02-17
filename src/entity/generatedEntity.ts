@@ -21,11 +21,11 @@ export class GeneratedEntity
   entityName: string
 
   @Column({
-    name: 'keys',
+    name: 'fields',
     type: 'json',
     comment: '字段',
   })
-  keys: JSON
+  fields: JSON
   
   @CreateDateColumn({
     name: 'created_at',
@@ -39,7 +39,11 @@ export class GeneratedEntity
   @DeleteDateColumn({
     name: 'deleted_at',
     transformer: {
-      from: (e : any) => moment(e).format('YYYY-MM-DD HH:mm:ss'),
+      from: (e : any) => {
+        if(e) {
+          return moment(e).format('YYYY-MM-DD HH:mm:ss')
+        }
+      },
       to: (e : any) => {
         if(e) {
           return moment(e).format('YYYY-MM-DD HH:mm:ss')

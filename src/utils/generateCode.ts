@@ -81,32 +81,32 @@ export const generateCURD = async ({
     {
       name: '页面详情',
       key: 'page-detail',
-      relatedApi: 'GET /api/b/auth/page'
+      relatedApis: ['GET /api/b/auth/page']
     },
     {
       name: '查看列表',
       key: 'list',
-      relatedApi: `GET /api/b/${pluralRouteName}`,
+      relatedApis: [`GET /api/b/${pluralRouteName}`],
     },
     {
       name: '查看详情',
       key: 'detail',
-      relatedApi: `GET /api/b/${routeName}`,
+      relatedApis: [`GET /api/b/${routeName}`],
     },
     {
       name: '新增',
       key: 'create',
-      relatedApi: `POST /api/b/${routeName}`,
+      relatedApis: [`POST /api/b/${routeName}`],
     },
     {
       name: '更新',
       key: 'update',
-      relatedApi: `PUT /api/b/${routeName}`,
+      relatedApis: [`PUT /api/b/${routeName}`],
     },
     {
       name: '删除',
       key: 'delete',
-      relatedApi: `DELETE /api/b/${routeName}`,
+      relatedApis: [`DELETE /api/b/${routeName}`],
     }
   ]
 }

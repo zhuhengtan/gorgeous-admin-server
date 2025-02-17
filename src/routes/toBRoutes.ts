@@ -4,6 +4,7 @@ import { upload } from '../utils/upload'
 import AuthController from '../controllers/toB/auth'
 import CommonController from '../controllers/common'
 
+import TestEntityController from '../controllers/toB/testEntity'
 // TEMPLATE IMPORT TAG
 
 const toBRouter = new Router()
@@ -39,8 +40,10 @@ toBRouter.post('/auth/admin/change-password', AuthController.changePwd)
 toBRouter.post('/auth/update-avatar', AuthController.updateAvatar)
 toBRouter.get('/auth/admin-auth', AuthController.getAdminAuth)
 
+toBRouter.get('/auth/generated-entities', AuthController.getGeneratedEntityList)
 toBRouter.post('/auth/generate-server-crud', AuthController.generateServerCRUD)
 toBRouter.get('/auth/generated-entity', AuthController.getGeneratedEntityDetail)
+toBRouter.put('/auth/generated-entity', AuthController.updateGeneratedEntity)
 
 // TEMPLATE ROUTES TAG
 
